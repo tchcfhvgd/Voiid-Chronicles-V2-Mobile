@@ -15,6 +15,7 @@ import flixel.FlxG;
 import ui.SimpleInfoDisplay;
 import ui.MemoryCounter;
 import states.TitleState;
+import haxe.io.Path;
 import flixel.FlxGame;
 import flixel.FlxState;
 import openfl.Assets;
@@ -42,11 +43,14 @@ class Main extends Sprite
 
 	public function new()
 	{
-		#if mobile
-		SUtil.uncaughtErrorHandler();
-		#end
 		super();
 
+		#if android
+		Sys.setCwd(Path.addTrailingSlash(Context.getExternalFilesDir()));
+		#elseif ios
+		Sys.setCwd(System.documentsDirectory);
+		#end
+		
 		if (stage != null)
 		{
 			init();
@@ -71,18 +75,6 @@ class Main extends Sprite
 
 	private function setupGame():Void
 	{
-		var stageWidth:Int = Lib.current.stage.stageWidth;
-		var stageHeight:Int = Lib.current.stage.stageHeight;
-
-		if (zoom == -1)
-		{
-			var ratioX:Float = stageWidth / gameWidth;
-			var ratioY:Float = stageHeight / gameHeight;
-			zoom = Math.min(ratioX, ratioY);
-			gameWidth = Math.ceil(stageWidth / zoom);
-			gameHeight = Math.ceil(stageHeight / zoom);
-		}
-
 		#if !cpp
 		framerate = 60;
 		#end
@@ -94,8 +86,6 @@ class Main extends Sprite
 		#if cpp 
 		cpp.vm.Gc.enable(true);
 		#end
-
-		SUtil.checkFiles();
 
 		addChild(new Bitmap(new BitmapData(Std.int(Capabilities.screenResolutionX),
 		Std.int(Capabilities.screenResolutionY), false, FlxColor.fromRGB(1,1,1)), true));
@@ -180,6 +170,10 @@ class Main extends Sprite
 
 		FlxG.signals.gameResized.add(fixCameraShaders);
 
+		#if android
+		FlxG.android.preventDefaultKeys = [BACK];
+		#end
+		
 		popupManager = new PopupManager();
 		addChild(popupManager);
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
@@ -187,7 +181,7 @@ class Main extends Sprite
 
 	function onCrash(e:UncaughtErrorEvent)
 	{
-		#if desktop
+		#if sys
 		var callstack:Array<StackItem> = CallStack.exceptionStack(true);
 		trace(CallStack.toString(callstack));
 		trace(e.error);
