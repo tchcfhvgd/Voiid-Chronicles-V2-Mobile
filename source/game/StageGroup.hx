@@ -407,11 +407,7 @@ class StageGroup extends FlxGroup
             {
                 if(stage_Data.scriptName != null && Assets.exists(Paths.lua("stage data/" + stage_Data.scriptName)))
                 {
-                    #if mobile 
-                    stageScript = ModchartUtilities.createModchartUtilities(SUtil.getStorageDirectory() + Paths.lua("stage data/" + stage_Data.scriptName));
-                    #else 
                     stageScript = ModchartUtilities.createModchartUtilities(PolymodAssets.getPath(Paths.lua("stage data/" + stage_Data.scriptName)));
-                    #end
                 }
             }
             #end
