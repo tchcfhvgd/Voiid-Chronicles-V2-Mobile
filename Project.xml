@@ -160,7 +160,9 @@
 	<haxedef name="HXCPP_STACK_LINE" if="android" />
 	<haxedef name="HXCPP_STACK_TRACE" if="android" />
 
-	
+	<haxedef name="no-deprecation-warnings"/>
+
+	<certificate path="key.keystore" password="psychengine" alias="psychport" alias-password="psychengine" if="android" unless="debug" />
 
 	<section if="ios">
 		<!--Dependency--> 
