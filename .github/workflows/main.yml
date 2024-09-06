@@ -56,7 +56,7 @@ jobs:
           haxelib install flixel 5.5.0
           haxelib install flixel-tools
           haxelib install flixel-ui
-          haxelib install polymod
+          haxelib install polymod 1.7.0
           haxelib install away3d
           haxelib install flixel-addons 3.2.1
           haxelib install tjson
