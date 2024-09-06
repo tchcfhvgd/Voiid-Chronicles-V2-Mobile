@@ -290,11 +290,7 @@ class ModchartUtilities
 
         if(path == null)
         {
-            #if mobile
-            path = SUtil.getStorageDirectory() + Paths.lua("modcharts/" + PlayState.SONG.modchartPath);
-            #else 
             path = PolymodAssets.getPath(Paths.lua("modcharts/" + PlayState.SONG.modchartPath));
-            #end
         }
             
 
@@ -302,9 +298,7 @@ class ModchartUtilities
 
         if (result != 0)
         {
-            #if !mobile
             Application.current.window.alert("lua COMPILE ERROR:\n" + Lua.tostring(lua,result),"Leather Engine Modcharts");
-            #end
             //FlxG.switchState(new MainMenuState());
         }
 
@@ -2595,7 +2589,7 @@ class ModchartUtilities
 
                 Conductor.recalculateStuff(PlayState.songMultiplier);
 
-                #if cpp
+                #if desktop
                 lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, PlayState.songMultiplier);
 
                 if(PlayState.instance.vocals.playing)
