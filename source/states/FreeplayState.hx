@@ -919,10 +919,10 @@ class FreeplayState extends MusicBeatState
 					@:privateAccess
 					{
 						if(FlxG.sound.music.active && FlxG.sound.music.playing)
-							lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+							lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 			
 						if (vocals.active && vocals.playing)
-							lime.media.openal.AL.sourcef(vocals._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+							lime.media.openal.AL.sourcef(vocals._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 					}
 					#end
 				}
@@ -961,10 +961,10 @@ class FreeplayState extends MusicBeatState
 							@:privateAccess
 							{
 								if(FlxG.sound.music.active && FlxG.sound.music.playing)
-									lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+									lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 					
 								if (vocals.active && vocals.playing)
-									lime.media.openal.AL.sourcef(vocals._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+									lime.media.openal.AL.sourcef(vocals._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 							}
 							#end
 						}
@@ -978,10 +978,10 @@ class FreeplayState extends MusicBeatState
 							@:privateAccess
 							{
 								if(FlxG.sound.music.active && FlxG.sound.music.playing)
-									lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+									lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 					
 								if (vocals.active && vocals.playing)
-									lime.media.openal.AL.sourcef(vocals._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+									lime.media.openal.AL.sourcef(vocals._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 							}
 							#end
 						}
@@ -1003,10 +1003,10 @@ class FreeplayState extends MusicBeatState
 					@:privateAccess
 					{
 						if(FlxG.sound.music.active && FlxG.sound.music.playing)
-							lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+							lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 			
 						if (vocals.active && vocals.playing)
-							lime.media.openal.AL.sourcef(vocals._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+							lime.media.openal.AL.sourcef(vocals._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 					}
 					#end
 				}
@@ -1023,10 +1023,10 @@ class FreeplayState extends MusicBeatState
 					@:privateAccess
 					{
 						if(FlxG.sound.music.active && FlxG.sound.music.playing)
-							lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+							lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 			
 						if (vocals.active && vocals.playing)
-							lime.media.openal.AL.sourcef(vocals._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+							lime.media.openal.AL.sourcef(vocals._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 					}
 					#end
 				}
@@ -1039,10 +1039,10 @@ class FreeplayState extends MusicBeatState
 					@:privateAccess
 					{
 						if(FlxG.sound.music.active && FlxG.sound.music.playing)
-							lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+							lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 			
 						if (vocals.active && vocals.playing)
-							lime.media.openal.AL.sourcef(vocals._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+							lime.media.openal.AL.sourcef(vocals._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 					}
 					#end
 				}
@@ -1087,7 +1087,7 @@ class FreeplayState extends MusicBeatState
 					@:privateAccess
 					{
 						if(FlxG.sound.music.active && FlxG.sound.music.playing)
-							lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, 1);
+							lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, 1);
 			
 						if (vocals.active && vocals.playing)
 							vocals.stop();
@@ -1143,10 +1143,10 @@ class FreeplayState extends MusicBeatState
 			@:privateAccess
 			{
 				if(FlxG.sound.music.active && FlxG.sound.music.playing && !FlxG.keys.justPressed.ENTER)
-					lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+					lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 	
 				if(vocals.active && vocals.playing && !FlxG.keys.justPressed.ENTER)
-					lime.media.openal.AL.sourcef(vocals._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+					lime.media.openal.AL.sourcef(vocals._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 			}
 			#end
 			#end
@@ -1474,10 +1474,10 @@ class FreeplayState extends MusicBeatState
 			@:privateAccess
 			{
 				if(FlxG.sound.music.active && FlxG.sound.music.playing)
-					lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+					lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 	
 				if (vocals.active && vocals.playing)
-					lime.media.openal.AL.sourcef(vocals._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
+					lime.media.openal.AL.sourcef(vocals._channel.__audioSource.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
 			}
 			#end
 		}
