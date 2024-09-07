@@ -1456,7 +1456,6 @@ class PlayState extends MusicBeatState
 	}
 
 	public function startVideo(name:String, ?ext:String, ?endSongVar:Bool = false):Void {
-		#if VIDEOS_ALLOWED
 		if(endSongVar)
 		{
 			paused = true;
