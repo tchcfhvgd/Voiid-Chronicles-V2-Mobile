@@ -42,15 +42,11 @@
 
 	<classpath name="source" />
 
-	
-
 	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web"/>
 
-
-
 	<!-- LEATHER ENGINE CUSTOMIZATION -->
-	<define name="VIDEOS_ALLOWED" if="web || windows" unless="32bit"/>
+	<define name="VIDEOS_ALLOWED" if="web || windows || mobile" unless="32bit"/>
 
 	<assets path="mods" embed="false" exclude="*.ogg" if="web"/>
 	<assets path="mods" embed="false" exclude="*.mp3" unless="web"/>
@@ -115,6 +111,7 @@
 	<haxelib name="polymod"/>
 	
 	<haxelib name="discord_rpc" if="desktop"/>
+	<haxelib name="hxvlc" if="VIDEOS_ALLOWED"/>
 	<haxelib name="linc_luajit" if="desktop || android"/>
 
 	<haxelib name="away3d"/>
