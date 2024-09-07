@@ -14,10 +14,6 @@ import game.GameHUD;
 import sys.FileSystem;
 #end
 
-#if BIT_64
-import modding.FlxVideo;
-#end
-
 #if discord_rpc
 import utilities.Discord.DiscordClient;
 #end
@@ -82,6 +78,9 @@ import substates.PauseSubState;
 import substates.GameOverSubstate;
 import game.Highscore;
 import openfl.utils.Assets as OpenFlAssets;
+#if VIDEOS_ALLOWED
+import hxvlc.flixel.FlxVideo;
+#end
 
 using StringTools;
 
@@ -1457,7 +1456,6 @@ class PlayState extends MusicBeatState
 	}
 
 	public function startVideo(name:String, ?ext:String, ?endSongVar:Bool = false):Void {
-		#if BIT_64
 		#if VIDEOS_ALLOWED
 		if(endSongVar)
 		{
@@ -1467,35 +1465,24 @@ class PlayState extends MusicBeatState
 			endingSong = true;
 		}
 		
-		var foundFile:Bool = false;
-		var fileName:String = #if sys Sys.getCwd() + PolymodAssets.getPath(Paths.video(name, ext)) #else Paths.video(name, ext) #end;
+	    #if VIDEOS_ALLOWED
+		var video_handler:FlxVideo = new FlxVideo();
 
-		#if sys
-		if(FileSystem.exists(fileName)) {
-			foundFile = true;
-		}
+		video_handler.onEndReached.add(function() {
+			video_handler.dispose();
+			FlxG.removeChild(video_handler);
+			bruhDialogue(endSongVar);
+		}, true);
+		video_handler.onEndReached.add(video_handler.dispose);
+		if (video_handler.load(PolymodAssets.getPath(Paths.video(name, ext))))
+			FlxTimer.wait(0.001, () -> video_handler.play());
+		video_handler.play();
+		video_handler.mute = false;
+		FlxG.addChildBelowMouse(video_handler);
+		#else
+		bruhDialogue(endSongVar);
+		trace("Videos aren't supported on this platform!", ERROR);
 		#end
-
-		if(!foundFile) {
-			fileName = Paths.video(name);
-
-			#if sys
-			if(FileSystem.exists(fileName)) {
-			#else
-			if(OpenFlAssets.exists(fileName)) {
-			#end
-				foundFile = true;
-			}
-		}
-
-		if(foundFile) {
-			var bg = new FlxSprite(-FlxG.width, -FlxG.height).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
-			bg.scrollFactor.set();
-			bg.cameras = [camHUD];
-			add(bg);
-
-			(new FlxVideo(fileName)).finishCallback = function() {
-				remove(bg);
 
 				if(endingSong) {
 					openSubState(new ResultsScreenSubstate());
@@ -1536,10 +1523,7 @@ class PlayState extends MusicBeatState
 				}
 			}
 			return;
-		} else {
-			FlxG.log.warn('Couldnt find video file: ' + fileName);
 		}
-		#end
 
 		if(endingSong) {
 			openSubState(new ResultsScreenSubstate());
@@ -1548,9 +1532,7 @@ class PlayState extends MusicBeatState
 				startCountdown();
 			else
 				openSubState(new ResultsScreenSubstate());
-		#if BIT_64
 		}
-		#end
 	}
 
 	function bruhDialogue(?endSongVar:Bool = false):Void
