@@ -1520,9 +1520,7 @@ class PlayState extends MusicBeatState
 						}
 					}
 				}
-			}
 			return;
-		}
 
 		if(endingSong) {
 			openSubState(new ResultsScreenSubstate());
