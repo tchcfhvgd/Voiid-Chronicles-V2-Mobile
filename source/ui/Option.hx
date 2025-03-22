@@ -71,24 +71,6 @@ class Option extends FlxTypedGroup<FlxSprite>
 	}
 	public function isSelected()
 	{
-		#if mobile
-		for (touch in FlxG.touches.list)
-		{
-			if (touch.justPressed)
-			{
-				if (Std.int(Alphabet_Text.targetY) == 0)
-				{
-					var cam:FlxCamera = FlxG.camera;
-					if (PlayState.instance != null && FlxG.state == PlayState.instance)
-						cam = PlayState.instance.camHUD;
-					if (MobileControls.checkTouchOverlap(touch, Alphabet_Text.x, Alphabet_Text.y, getAlphabetWidth(), Alphabet_Text.height, cam))
-					{
-						return true;
-					}
-				}
-			}
-		}
-		#end
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 		if (gamepad != null)
 		{
