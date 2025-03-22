@@ -101,7 +101,7 @@ class Main extends Sprite
 		addChild(new Bitmap(new BitmapData(Std.int(Capabilities.screenResolutionX),
 		Std.int(Capabilities.screenResolutionY), false, FlxColor.fromRGB(1,1,1)), true));
 
-		var game:FlxGame = new FlxGame(gameWidth, gameHeight, #if (mobile && MODS_ALLOWED) !CopyState.checkExistingFiles() ? CopyState : #end initialState, #if (flixel < "5.0.0") zoom, #end framerate, framerate, skipSplash, startFullscreen);
+		var game:FlxGame = new FlxGame(gameWidth, gameHeight, #if (mobile) !CopyState.checkExistingFiles() ? CopyState : #end initialState, #if (flixel < "5.0.0") zoom, #end framerate, framerate, skipSplash, startFullscreen);
 		addChild(game);
 
 		FlxGraphic.defaultPersist = false;
