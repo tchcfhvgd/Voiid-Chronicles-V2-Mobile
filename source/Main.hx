@@ -98,10 +98,6 @@ class Main extends Sprite
 		framerate = 60;
 		#end
 
-		#if !debug
-		initialState = TitleState;
-		#end
-
 		addChild(new Bitmap(new BitmapData(Std.int(Capabilities.screenResolutionX),
 		Std.int(Capabilities.screenResolutionY), false, FlxColor.fromRGB(1,1,1)), true));
 
@@ -184,13 +180,13 @@ class Main extends Sprite
 
 		//#if !mobile
 		display = new SimpleInfoDisplay(10, 3, 0xFFFFFF, "_sans");
-		addChild(display);
+		FlxG.game.addChild(display);
 		//#end
 
 		FlxG.signals.gameResized.add(fixCameraShaders);
 
 		popupManager = new PopupManager();
-		addChild(popupManager);
+		FlxG.game.addChild(popupManager);
 	        #if mobile
 		lime.system.System.allowScreenTimeout = Options.getData("screenSaver");
 		#if android
