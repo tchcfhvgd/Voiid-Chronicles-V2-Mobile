@@ -290,11 +290,7 @@ class ModchartUtilities
 
         if(path == null)
         {
-            #if mobile
-            path = SUtil.getStorageDirectory() + Paths.lua("modcharts/" + PlayState.SONG.modchartPath);
-            #else 
             path = PolymodAssets.getPath(Paths.lua("modcharts/" + PlayState.SONG.modchartPath));
-            #end
         }
             
 
@@ -302,9 +298,7 @@ class ModchartUtilities
 
         if (result != 0)
         {
-            #if !mobile
-            Application.current.window.alert("lua COMPILE ERROR:\n" + Lua.tostring(lua,result),"Leather Engine Modcharts");
-            #end
+            CoolUtil.showPopUp("lua COMPILE ERROR:\n" + Lua.tostring(lua,result),"Leather Engine Modcharts");
             //FlxG.switchState(new MainMenuState());
         }
 
@@ -383,11 +377,7 @@ class ModchartUtilities
 
         setVar("curStage", PlayState.SONG.stage);
 
-        #if mobile
-        setVar("mobile", true);
-        #else 
         setVar("mobile", false);
-        #end
 
         // callbacks
 
@@ -456,101 +446,6 @@ class ModchartUtilities
         Lua_helper.add_callback(lua,"trace", function(str:String = "") {
             trace(str);
         });
-
-        #if VIDEOS_ALLOWED
-        Lua_helper.add_callback(lua,"startLuaVideo", function(name:String = "", ext:String = ".mp4") {
-            
-            var foundFile:Bool = false;
-            var fileName:String = #if sys Sys.getCwd() + PolymodAssets.getPath(Paths.video(name, ext)) #else Paths.video(name, ext) #end;
-    
-            #if sys
-            if(sys.FileSystem.exists(fileName)) {
-                foundFile = true;
-            }
-            #end
-    
-            if(!foundFile) {
-                fileName = Paths.video(name);
-    
-                #if sys
-                if(sys.FileSystem.exists(fileName)) {
-                #else
-                if(OpenFlAssets.exists(fileName)) {
-                #end
-                    foundFile = true;
-                }
-            }
-
-            if (foundFile)
-            {
-                @:privateAccess
-                PlayState.instance.canPause = false;
-
-                PlayState.instance.luaVideo = new FlxVideo(fileName);
-                PlayState.instance.luaVideo.finishCallback = function()
-                {
-                    @:privateAccess
-                    PlayState.instance.canPause = true;
-                    PlayState.instance.luaVideo = null;
-                }
-                PlayState.instance.luaVideo.readyCallback = function()
-                {
-                    //FlxVideo.vlcBitmap.pause();
-                }
-            }
-        });
-
-        Lua_helper.add_callback(lua,"pauseLuaVideo", function() {
-            if (PlayState.instance.luaVideo != null)
-            {
-                #if desktop
-                if (FlxVideo.vlcBitmap != null)
-                {
-                    FlxVideo.vlcBitmap.pause();
-                }
-                #end
-            }
-        });
-        Lua_helper.add_callback(lua,"resumeLuaVideo", function() {
-            if (PlayState.instance.luaVideo != null)
-            {
-                #if desktop
-                if (FlxVideo.vlcBitmap != null)
-                {
-                    FlxVideo.vlcBitmap.resume();
-                }
-                #end
-            }
-        });
-        Lua_helper.add_callback(lua,"setLuaVideoTime", function(time:Float) {
-            if (PlayState.instance.luaVideo != null)
-            {
-                #if desktop
-                if (FlxVideo.vlcBitmap != null)
-                {
-                    FlxVideo.vlcBitmap.seek(time);
-                }
-                #end
-            }
-        });
-        Lua_helper.add_callback(lua,"setLuaVideoHide", function(hide:Bool) {
-            if (PlayState.instance.luaVideo != null)
-            {
-                #if desktop
-                if (FlxVideo.vlcBitmap != null)
-                {
-                    FlxVideo.vlcBitmap.hideVideo = hide;
-                }
-                #end
-            }
-        });
-        Lua_helper.add_callback(lua,"stopLuaVideo", function() {
-            if (PlayState.instance.luaVideo != null)
-            {
-                PlayState.instance.luaVideo.onVLCComplete();
-            }
-        });
-        #end
         
 
         Lua_helper.add_callback(lua,"perlin", function(x:Float, y:Float, z:Float) {
@@ -638,12 +533,6 @@ class ModchartUtilities
                 }
 
             }
-
-            #if mobile
-            var controls = PlayState.instance.mobileControls;
-            if (controls.getDodgeJustPressed())
-                return true;
-            #end
 
             return FlxG.keys.checkStatus(FlxKey.fromString(utilities.Options.getData("dodgeBind", "binds")), FlxInputState.JUST_PRESSED);
         });
@@ -2672,11 +2561,6 @@ class ModchartUtilities
             if (!utilities.Options.getData("shaders"))
                 return;
 
-            #if mobile
-            //Application.current.window.alert("loading shader: "+classString,"Leather Engine Modcharts");
-            if (mobileShaderBlacklist.contains(classString))
-                return;
-            #end
 
             var shaderClass = Type.resolveClass('shaders.'+classString);
             if (shaderClass != null)
