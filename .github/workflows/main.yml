@@ -51,7 +51,8 @@ jobs:
           haxelib install flixel-ui 2.5.0
           haxelib install flixel-addons 3.0.2
           haxelib install hxvlc 1.7.1
-          haxelib install hscript
+          haxelib install hscript 2.5.0
+          haxelib install away3d
           haxelib install flixel-tools
           haxelib install polymod 1.5.2
           haxelib git linc_luajit https://github.com/MobilePorting/linc_luajit
