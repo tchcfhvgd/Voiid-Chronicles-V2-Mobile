@@ -139,6 +139,17 @@ class CoolUtil
 		return returnText;
 	}
 
+	public static function colorFromString(color:String):FlxColor
+	{
+		var hideChars = ~/[\t\n\r]/;
+		var color:String = hideChars.split(color).join('').trim();
+		if(color.startsWith('0x')) color = color.substring(color.length - 6);
+
+		var colorNum:Null<FlxColor> = FlxColor.fromString(color);
+		if(colorNum == null) colorNum = FlxColor.fromString('#$color');
+		return colorNum != null ? colorNum : FlxColor.WHITE;
+	}
+	
 	// stolen from psych lmao cuz i'm lazy
 	public static function dominantColor(sprite:flixel.FlxSprite):Int
 	{
@@ -227,5 +238,14 @@ class CoolUtil
 		}
 
 		return formatted_bytes;
+	}
+
+	public static function showPopUp(message:String, title:String):Void
+	{
+		#if android
+		android.Tools.showAlertDialog(title, message, {name: "OK", func: null}, null);
+		#else
+		FlxG.stage.window.alert(message, title);
+		#end
 	}
 }
