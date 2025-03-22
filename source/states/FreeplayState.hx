@@ -154,20 +154,6 @@ class FreeplayState extends MusicBeatState
 
 	function getEnterPress() //temp
 	{
-
-		#if mobile
-		if (!selectedSong)
-		{
-			if (MobileControls.verticalPressAlphabet(grpSongs, curSelected) == 0)
-				return true;
-		}
-		else
-		{
-			if (MobileControls.justPressedAny())
-				return true;
-		}
-		#end
-
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 		if (gamepad != null)
 		{
@@ -195,20 +181,16 @@ class FreeplayState extends MusicBeatState
 
 		FlxG.cameras.setDefaultDrawTarget(camGame, true);
 
-		#if !mobile
 		if (utilities.Options.getData("shaders"))
 			camGame.setFilters([new ShaderFilter(cameraBlur.shader)]);
-		#end
 
 		camHUD.bgColor.alpha = 0;
 		camHUD.alpha = 0.0;
 
-		#if !mobile
 		whiteShader = new ColorFillEffect();
 		whiteShader.red = 255;
 		whiteShader.green = 255;
 		whiteShader.blue = 255;
-		#end
 
 		#if NO_PRELOAD_ALL
 		if(!songsReady)
@@ -773,11 +755,9 @@ class FreeplayState extends MusicBeatState
 			lerpScore = intendedScore;
 
 		
-		#if !mobile
 		if (whiteShader.fade < 1.0)
 			whiteShader.fade += elapsed*1.5;
 		whiteShader.update(elapsed);
-		#end
 
 		var funnyObject:FlxText = scoreText;
 
@@ -937,60 +917,6 @@ class FreeplayState extends MusicBeatState
 
 			if (selectedSong)
 			{
-
-				#if mobile //mobile controls for diff/speed selection
-				for (touch in FlxG.touches.list)
-				{
-					if (touch.justPressed)
-					{
-						if (MobileControls.checkTouchOverlap(touch, leftDiffArr.x, leftDiffArr.y, leftDiffArr.width, leftDiffArr.height, camHUD))
-						{
-							changeDiff(-1);
-						}
-						else if (MobileControls.checkTouchOverlap(touch, rightDiffArr.x, rightDiffArr.y, rightDiffArr.width, rightDiffArr.height, camHUD))
-						{
-							changeDiff(1);
-						}
-						else if (MobileControls.checkTouchOverlap(touch, leftSpeedArr.x, leftSpeedArr.y, leftSpeedArr.width, leftSpeedArr.height, camHUD))
-						{
-							curSpeed -= 0.05;
-							updateArrows();
-							updateLeaderboardText();
-			
-							#if cpp
-							@:privateAccess
-							{
-								if(FlxG.sound.music.active && FlxG.sound.music.playing)
-									lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
-					
-								if (vocals.active && vocals.playing)
-									lime.media.openal.AL.sourcef(vocals._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
-							}
-							#end
-						}
-						else if (MobileControls.checkTouchOverlap(touch, rightSpeedArr.x, rightSpeedArr.y, rightSpeedArr.width, rightSpeedArr.height, camHUD))
-						{
-							curSpeed += 0.05;
-							updateArrows();
-							updateLeaderboardText();
-			
-							#if cpp
-							@:privateAccess
-							{
-								if(FlxG.sound.music.active && FlxG.sound.music.playing)
-									lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
-					
-								if (vocals.active && vocals.playing)
-									lime.media.openal.AL.sourcef(vocals._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, curSpeed);
-							}
-							#end
-						}
-					}
-
-				}
-				#end
-
-
 				if (leftP && !shift)
 					changeDiff(-1);
 				else if (leftP && shift)
@@ -1164,37 +1090,16 @@ class FreeplayState extends MusicBeatState
 				openSubState(subState);
 			}
 
-			if(getEnterPress() && canEnterSong && (!songs[curSelected].locked || (VoiidMainMenuState.devBuild #if !mobile && FlxG.keys.pressed.SHIFT #end)) && songs.length > 0)
+			if(getEnterPress() && canEnterSong && (!songs[curSelected].locked || (VoiidMainMenuState.devBuild  && FlxG.keys.pressed.SHIFT)) && songs.length > 0)
 			{
 				//#if mobile 
 				//selectedSong = true;
 				//#end
 				if (selectedSong)
 				{
-					#if mobile
-					var didPressSong:Bool = false;
-					for (touch in FlxG.touches.list)
-					{
-						if (MobileControls.checkTouchOverlap(touch, songNameThing.x, songNameThing.y, songNameThing.width, songNameThing.height, camHUD))
-						{
-							didPressSong = true;
-						}
-					}
-					if (!didPressSong)
-						return;
-					
-					#end
 					var diff:String = curDiffString;
 					var song:String = songs[curSelected].songName.toLowerCase();
 					var poop:String = Highscore.formatSong(song, diff);
-					#if mobile 
-					//on mobile the song names need to be exact, most stuff is already correctly formatted and not lowercase
-					song = songs[curSelected].songName;
-					diff = curDiffArray[curDifficulty];
-					poop = song;
-					if(diff.toLowerCase() != "normal")
-						poop += "-" + diff;
-					#end					
 	
 					trace(poop);
 	
@@ -1212,7 +1117,7 @@ class FreeplayState extends MusicBeatState
 						PlayState.storyWeek = songs[curSelected].week;
 						trace('CUR WEEK' + PlayState.storyWeek);
 	
-						if(Assets.exists(Paths.inst(PlayState.SONG.song, #if mobile diff #else PlayState.storyDifficultyStr #end)))
+						if(Assets.exists(Paths.inst(PlayState.SONG.song, PlayState.storyDifficultyStr)))
 						{
 							
 							if(colorTween != null)
@@ -1284,16 +1189,6 @@ class FreeplayState extends MusicBeatState
 
 			if (!selectedSong)
 			{
-				#if mobile
-				var vPress:Int = MobileControls.verticalPressAlphabet(grpSongs, curSelected);
-				switch(vPress)
-				{
-					case -1: 
-						changeSelection(-1);
-					case 1: 
-						changeSelection(1);
-				}
-				#end
 			}
 		}
 	}
@@ -1345,13 +1240,9 @@ class FreeplayState extends MusicBeatState
 						remove(iconArray[curSelected]);
 						iconArray[curSelected].kill();
 						iconArray[curSelected] = newIcon;
-						#if !mobile
 						newIcon.shader = whiteShader.shader;
-						#end
 						add(newIcon);
-						#if !mobile
 						whiteShader.fade = 0.0;
-						#end
 						newIcon.update(0);
 						FlxG.sound.play(Paths.sound('ssj_burst'), 0.6);
 						updateColor();
@@ -1367,18 +1258,13 @@ class FreeplayState extends MusicBeatState
 						iconArray[curSelected].kill();
 						iconArray[curSelected] = newIcon;
 						add(newIcon);
-						#if !mobile
 						newIcon.shader = whiteShader.shader;
-						#end
 						newIcon.update(0);
-						#if !mobile
 						whiteShader.fade = 0.0;
-						#end
 						updateColor();
 					}
 				}
 			}
-			#if !mobile
 			if (songIcon == null || iconArray[curSelected].name != songIcon.name)
 			{
 				if (songIcon != null)
@@ -1398,7 +1284,6 @@ class FreeplayState extends MusicBeatState
 				songIcon.direction = RIGHT;
 				add(songIcon);
 			}
-			#end
 
 		}
 		updateDiffImage();
