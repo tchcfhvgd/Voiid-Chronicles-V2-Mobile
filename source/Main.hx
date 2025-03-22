@@ -192,7 +192,7 @@ class Main extends Sprite
 		popupManager = new PopupManager();
 		addChild(popupManager);
 	        #if mobile
-		lime.system.System.allowScreenTimeout = ClientPrefs.screensaver;
+		lime.system.System.allowScreenTimeout = Options.getData("screenSaver");
 		#if android
 		FlxG.android.preventDefaultKeys = [BACK]; 
 		#end
