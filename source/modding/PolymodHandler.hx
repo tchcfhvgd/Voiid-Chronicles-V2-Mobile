@@ -12,7 +12,7 @@ class PolymodHandler
         loadModMetadata();
 
 		Polymod.init({
-			modRoot:"mods/",
+			modRoot:#if mobile Sys.getCwd() + #end "mods/",
 			dirs: ModList.getActiveMods(metadataArrays),
             framework: OPENFL,
 			errorCallback: function(error:PolymodError)
@@ -38,7 +38,7 @@ class PolymodHandler
         metadataArrays = [];
 
         #if (polymod <= "1.5.2")
-        var tempArray = Polymod.scan("mods/","*.*.*",function(error:PolymodError) {
+        var tempArray = Polymod.scan(#if mobile Sys.getCwd() + #end "mods/","*.*.*",function(error:PolymodError) {
             #if debug
 			trace(error.message);
             #end
