@@ -38,13 +38,33 @@ class Main extends Sprite
 	public static function main():Void
 	{
 		Lib.current.addChild(new Main());
+		#if cpp
+		cpp.NativeGc.enable(true);
+		#elseif hl
+		hl.Gc.enable(true);
+		#end
 	}
 
 	public function new()
 	{
 		#if mobile
-		SUtil.uncaughtErrorHandler();
+		#if android
+		StorageUtil.requestPermissions();
 		#end
+		Sys.setCwd(StorageUtil.getStorageDirectory());
+		#end
+
+		CrashHandler.init();
+
+		#if windows
+		@:functionCode("
+		#include <windows.h>
+		#include <winuser.h>
+		setProcessDPIAware() // allows for more crisp visuals
+		DisableProcessWindowsGhosting() // lets you move the window and such if it's not responding
+		")
+		#end
+		
 		super();
 
 		if (stage != null)
@@ -71,18 +91,6 @@ class Main extends Sprite
 
 	private function setupGame():Void
 	{
-		var stageWidth:Int = Lib.current.stage.stageWidth;
-		var stageHeight:Int = Lib.current.stage.stageHeight;
-
-		if (zoom == -1)
-		{
-			var ratioX:Float = stageWidth / gameWidth;
-			var ratioY:Float = stageHeight / gameHeight;
-			zoom = Math.min(ratioX, ratioY);
-			gameWidth = Math.ceil(stageWidth / zoom);
-			gameHeight = Math.ceil(stageHeight / zoom);
-		}
-
 		#if !cpp
 		framerate = 60;
 		#end
@@ -91,16 +99,10 @@ class Main extends Sprite
 		initialState = TitleState;
 		#end
 
-		#if cpp 
-		cpp.vm.Gc.enable(true);
-		#end
-
-		SUtil.checkFiles();
-
 		addChild(new Bitmap(new BitmapData(Std.int(Capabilities.screenResolutionX),
 		Std.int(Capabilities.screenResolutionY), false, FlxColor.fromRGB(1,1,1)), true));
 
-		var game:FlxGame = new FlxGame(gameWidth, gameHeight, initialState, #if (flixel < "5.0.0") zoom, #end framerate, framerate, skipSplash, startFullscreen);
+		var game:FlxGame = new FlxGame(gameWidth, gameHeight, #if (mobile && MODS_ALLOWED) !CopyState.checkExistingFiles() ? CopyState : #end initialState, #if (flixel < "5.0.0") zoom, #end framerate, framerate, skipSplash, startFullscreen);
 		addChild(game);
 
 		FlxGraphic.defaultPersist = false;
@@ -154,8 +156,10 @@ class Main extends Sprite
 			#end
 
 			#if cpp
-			cpp.vm.Gc.enable(true);
-			#end
+		cpp.NativeGc.run(true);
+		#elseif hl
+		hl.Gc.major();
+		#end
 	
 			#if sys
 			openfl.system.System.gc();	
@@ -165,8 +169,10 @@ class Main extends Sprite
 		FlxG.signals.postStateSwitch.add(function()
 		{
 			#if cpp
-			cpp.vm.Gc.enable(true);
-			#end
+		cpp.NativeGc.run(true);
+		#elseif hl
+		hl.Gc.major();
+		#end
 	
 			#if sys
 			openfl.system.System.gc();	
@@ -182,19 +188,11 @@ class Main extends Sprite
 
 		popupManager = new PopupManager();
 		addChild(popupManager);
-		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
-	}
-
-	function onCrash(e:UncaughtErrorEvent)
-	{
-		#if desktop
-		var callstack:Array<StackItem> = CallStack.exceptionStack(true);
-		trace(CallStack.toString(callstack));
-		trace(e.error);
-
-		Lib.application.window.alert(CallStack.toString(callstack), e.error); //popup crash with callstack and error message
-
-		Sys.exit(0);
+	        #if mobile
+		lime.system.System.allowScreenTimeout = ClientPrefs.screensaver;
+		#if android
+		FlxG.android.preventDefaultKeys = [BACK]; 
+		#end
 		#end
 	}
 
