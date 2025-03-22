@@ -297,6 +297,10 @@
         {
             "option": "gpuTextures",
             "value": false
+        },
+        {
+            "option": "screenSaver",
+            "value": false
         }
     ]
 }
