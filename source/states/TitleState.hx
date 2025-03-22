@@ -77,9 +77,6 @@ class TitleState extends MusicBeatState
 			PolymodHandler.loadMods();
 			#end
 
-			#if android
-			FlxG.android.preventDefaultKeys = [BACK];
-			#end
 
 			MusicBeatState.windowNamePrefix = Assets.getText(Paths.txt("windowTitleBase", "preload"));
 
@@ -327,10 +324,13 @@ class TitleState extends MusicBeatState
 
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
 
-		#if mobile
-		if (MobileControls.justPressedAny())
-			pressedEnter = true;
-		#end
+		for (touch in FlxG.touches.list)
+		{
+			if (touch.justPressed)
+			{
+				pressedEnter = true;
+			}
+		}
 
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 
