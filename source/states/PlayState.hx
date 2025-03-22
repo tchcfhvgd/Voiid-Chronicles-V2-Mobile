@@ -526,12 +526,6 @@ class PlayState extends MusicBeatState
 		if (utilities.Options.getData("opponentPlay") && !inMultiplayerSession)
 			characterPlayingAs = 1;
 
-		//testing
-		#if mobile
-		//utilities.Options.setData(true, "noDeath");
-		//utilities.Options.setData(false, "botplay");
-		#end
-
 		if (inMultiplayerSession)
 		{
 			utilities.Options.setData(false, "botplay");
@@ -979,11 +973,7 @@ class PlayState extends MusicBeatState
 			if(Assets.exists(Paths.file("globalScripts/")) && !utilities.Options.getData("forceDisableScripts"))
 			{
 				//trace('found globals folder');
-				#if !mobile 
 				var folder:String = PolymodAssets.getPath(Paths.file("globalScripts/"));
-				#else 
-				var folder:String = SUtil.getStorageDirectory() + "mods/Voiid Chronicles/globalScripts/";
-				#end
 
 				//trace(folder);
 
@@ -1000,37 +990,11 @@ class PlayState extends MusicBeatState
 				}
 			}
 
-			#if mobile 
-			if (!utilities.Options.getData("forceDisableScripts"))
-			{
-				var scriptList = CoolUtil.coolTextFile(Paths.txt('globalScriptList'));
-				for (scriptName in scriptList)
-				{
-					if (!scriptName.startsWith("~"))
-					{
-						if(!event_luas.exists(scriptName))
-						{
-							event_luas.set(scriptName, ModchartUtilities.createModchartUtilities(SUtil.getStorageDirectory() + "mods/Voiid Chronicles/globalScripts/" + scriptName + ".lua"));
-							generatedSomeDumbEventLuas = true;
-						}
-					}
-				}
-			}
-
-			#end
-
 			if((Assets.exists(Paths.file("data/song data/"+SONG.song+"/")) 
-				#if mobile
-				|| FileSystem.exists(SUtil.getStorageDirectory() + "mods/Voiid Chronicles/data/song data/"+SONG.song+"/") 
-				#end
 				) && !utilities.Options.getData("forceDisableScripts"))
 			{
 				//trace('found globals folder');
-				#if !mobile 
 				var folder:String = PolymodAssets.getPath(Paths.file("data/song data/"+SONG.song+"/"));
-				#else 
-				var folder:String = SUtil.getStorageDirectory() + "mods/Voiid Chronicles/data/song data/"+SONG.song+"/";
-				#end
 				
 
 				//trace(folder);
@@ -1330,16 +1294,9 @@ class PlayState extends MusicBeatState
 			{
 				#if linc_luajit
 				if(!event_luas.exists(event[0].toLowerCase()) && (Assets.exists(Paths.lua("event data/" + event[0].toLowerCase())) 
-					#if mobile
-					|| FileSystem.exists(SUtil.getStorageDirectory() + Paths.lua("event data/" + event[0].toLowerCase()))
-					#end
 				) )
 				{
-					#if mobile 
-					event_luas.set(event[0].toLowerCase(), ModchartUtilities.createModchartUtilities(SUtil.getStorageDirectory() + Paths.lua("event data/" + event[0].toLowerCase())));
-					#else
 					event_luas.set(event[0].toLowerCase(), ModchartUtilities.createModchartUtilities(PolymodAssets.getPath(Paths.lua("event data/" + event[0].toLowerCase()))));
-					#end
 					generatedSomeDumbEventLuas = true;
 				}
 				#end
@@ -1631,12 +1588,6 @@ class PlayState extends MusicBeatState
 			//	generateStaticArrows(0, true);
 			//}
 		}
-		#if mobile
-		mobileControls = new MobileControls();
-		mobileControls.generateButtons(characterPlayingAs == 0 ? SONG.playerKeyCount : SONG.keyCount, songHasDodges);
-		mobileControls.cameras = [camTransition];
-		add(mobileControls);
-		#end
 
 
 		startedCountdown = true;
@@ -3416,23 +3367,6 @@ class PlayState extends MusicBeatState
 					pause = true;
 			}
 		}
-		#if mobile 
-		if(controls.BACK)
-			pause = true;
-
-		mobileControls.visible = !MusicBeatState.usingController;
-		#end
-		if(pause && startedCountdown && canPause && !switchedStates)
-		{
-			persistentUpdate = false;
-			persistentDraw = true;
-			paused = true;
-
-			openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
-		
-			#if discord_rpc
-			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC, curPortrait);
-			#end
 		}
 
 		if(!utilities.Options.getData("disableDebugMenus") && !inMultiplayerSession)
@@ -3731,10 +3665,6 @@ class PlayState extends MusicBeatState
 					difficulty = '-' + storyDifficultyStr.toLowerCase();
 
 				var song:String = PlayState.storyPlaylist[0].toLowerCase();
-				#if mobile
-				song = PlayState.storyPlaylist[0];
-				difficulty = "-"+diffLoadedInWith;
-				#end
 
 				trace('LOADING NEXT SONG');
 				trace(PlayState.storyPlaylist[0].toLowerCase() + difficulty);
@@ -4213,38 +4143,16 @@ class PlayState extends MusicBeatState
 					releasedArray = [];
 					heldArray = [];
 
-					#if mobile 
-					mobileControls.updateInput();
-					#end
 	
 					for(i in 0...binds.length)
 					{
-						#if mobile 
-						if (mobileControls.hasDodges && i >= Math.floor(mobileControls.keyCount/2))
-						{
-							justPressedArray[i] = mobileControls.justPressed[i+1];
-							releasedArray[i] = mobileControls.released[i+1];
-							justReleasedArray[i] = mobileControls.justReleased[i+1];
-							heldArray[i] = mobileControls.pressed[i+1];
-						}
-						else 
-						{
-							justPressedArray[i] = mobileControls.justPressed[i];
-							releasedArray[i] = mobileControls.released[i];
-							justReleasedArray[i] = mobileControls.justReleased[i];
-							heldArray[i] = mobileControls.pressed[i];
-						}
-		
-						#else
 						justPressedArray[i] = FlxG.keys.checkStatus(FlxKey.fromString(binds[i]), FlxInputState.JUST_PRESSED);
 						releasedArray[i] = FlxG.keys.checkStatus(FlxKey.fromString(binds[i]), FlxInputState.RELEASED);
 						justReleasedArray[i] = FlxG.keys.checkStatus(FlxKey.fromString(binds[i]), FlxInputState.JUST_RELEASED);
 						heldArray[i] = FlxG.keys.checkStatus(FlxKey.fromString(binds[i]), FlxInputState.PRESSED);
-						#end
 		
 						if(releasedArray[i] == true)
 						{
-							#if !mobile 
 							if (getCorrectKeyCount(true) == 4)
 							{
 								justPressedArray[i] = FlxG.keys.checkStatus(FlxKey.fromString(bruhBinds[i]), FlxInputState.JUST_PRESSED);
@@ -4259,7 +4167,6 @@ class PlayState extends MusicBeatState
 								justReleasedArray[i] = FlxG.keys.checkStatus(FlxKey.fromString(bruhBindsbut5k[i]), FlxInputState.JUST_RELEASED);
 								heldArray[i] = FlxG.keys.checkStatus(FlxKey.fromString(bruhBindsbut5k[i]), FlxInputState.PRESSED);
 							}
-							#end
 
 							//controller support still works on mobile
 							var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
@@ -5663,11 +5570,7 @@ class PlayState extends MusicBeatState
 			#if linc_luajit
 			if(!event_luas.exists(event[0].toLowerCase()) && Assets.exists(Paths.lua("event data/" + event[0].toLowerCase())))
 			{
-				#if mobile 
-				event_luas.set(event[0].toLowerCase(), ModchartUtilities.createModchartUtilities(SUtil.getStorageDirectory() + Paths.lua("event data/" + event[0].toLowerCase())));
-				#else
 				event_luas.set(event[0].toLowerCase(), ModchartUtilities.createModchartUtilities(PolymodAssets.getPath(Paths.lua("event data/" + event[0].toLowerCase()))));
-				#end
 				generatedSomeDumbEventLuas = true;
 			}
 			#end
@@ -5685,11 +5588,7 @@ class PlayState extends MusicBeatState
 			#if linc_luajit
 			if(!event_luas.exists(noteType.toLowerCase()) && Assets.exists(Paths.lua("arrow types/" + noteType)))
 			{
-				#if mobile 
-				event_luas.set(noteType.toLowerCase(), ModchartUtilities.createModchartUtilities(SUtil.getStorageDirectory() + Paths.lua("arrow types/" + noteType)));		
-				#else
 				event_luas.set(noteType.toLowerCase(), ModchartUtilities.createModchartUtilities(PolymodAssets.getPath(Paths.lua("arrow types/" + noteType))));			
-				#end
 				generatedSomeDumbEventLuas = true;
 			}
 			#end
