@@ -34,6 +34,7 @@ import openfl.utils.ByteArray;
 import haxe.io.Path;
 import flixel.ui.FlxBar;
 import flixel.ui.FlxBar.FlxBarFillDirection;
+import states.MusicBeatState;
 #if sys
 import sys.io.File;
 import sys.FileSystem;
@@ -70,7 +71,7 @@ class CopyState extends MusicBeatState
 		checkExistingFiles();
 		if (maxLoopTimes <= 0)
 		{
-			MusicBeatState.switchState(new TitleState());
+			FlxG.switchState(new TitleState());
 			return;
 		}
 
@@ -122,7 +123,7 @@ class CopyState extends MusicBeatState
 				canUpdate = false;
 				FlxG.sound.play(Paths.sound('confirmMenu')).onComplete = () ->
 				{
-					MusicBeatState.switchState(new TitleState());
+					FlxG.switchState(new TitleState());
 				};
 			}
 
