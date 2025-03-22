@@ -3367,6 +3367,17 @@ class PlayState extends MusicBeatState
 					pause = true;
 			}
 		}
+ 		if(pause && startedCountdown && canPause && !switchedStates)
+ 		{
+ 			persistentUpdate = false;
+ 			persistentDraw = true;
+ 			paused = true;
+ 
+ 			openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
+ 		
+ 			#if discord_rpc
+ 			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC, curPortrait);
+ 			#end
 		}
 
 		if(!utilities.Options.getData("disableDebugMenus") && !inMultiplayerSession)
