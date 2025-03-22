@@ -261,8 +261,6 @@ class PlayState extends MusicBeatState
 
 	public var centerCamera:Bool = false;
 
-	public var mobileControls:MobileControls;
-
 	public function new(?_replay:Replay)
 	{
 		super();
