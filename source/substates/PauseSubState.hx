@@ -157,16 +157,6 @@ class PauseSubState extends MusicBeatSubstate
 		var downP = controls.DOWN_P;
 		var accepted = controls.ACCEPT;
 
-		#if mobile
-		var vPress:Int = MobileControls.verticalPressOptions(grpMenuShit, curSelected, PlayState.instance.camHUD);
-		//if (vPress == 0) //im so confused
-			//accepted = true;
-		#end
-
-
-
-
-
 		switch(warningAmountLols)
 		{
 			case 50:
@@ -189,22 +179,6 @@ class PauseSubState extends MusicBeatSubstate
 			changeSelection(-1);
 		if (downP)
 			changeSelection(1);
-
-		
-		#if mobile
-		if(!accepted)
-		{
-			switch(vPress)
-			{
-				case -1:
-					changeSelection(-1);
-				case 1: 
-					changeSelection(1);
-				case 0: 
-					accepted = true;
-			}
-		}
-		#end
 
 		if(!accepted)
 			justPressedAcceptLol = false;
