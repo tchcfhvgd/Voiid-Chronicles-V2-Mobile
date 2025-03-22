@@ -48,10 +48,6 @@ class OptionsMenu extends MusicBeatState
 
 	function getEnterPress()
 	{
-		#if mobile
-		if (MobileControls.justPressedAny())
-			return true;
-		#end
 		return FlxG.keys.justPressed.ENTER;
 	}
 
@@ -376,18 +372,6 @@ class OptionsMenu extends MusicBeatState
 				curSelected += 1;
 				FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 			}
-			#if mobile
-			var vPress:Int = MobileControls.verticalPressOptions(page, curSelected);
-			switch(vPress)
-			{
-				case -1: 
-					curSelected -= 1;
-					FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-				case 1: 
-					curSelected += 1;
-					FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-			}
-			#end
 
 			if (controls.BACK)
 			{
