@@ -1505,7 +1505,7 @@ class PlayState extends MusicBeatState
 		}
 
 		#if VIDEOS_ALLOWED
-		if (videoHandler.load(Paths.getModPath(Paths.video(name, ext))))
+		if (videoHandler.load(#if sys Sys.getCwd() + PolymodAssets.getPath(Paths.video(name, ext)) #else Paths.video(name, ext) #end))
 		videoHandler.play();
 		videoHandler.onEndReached.add(function() {
 			videoHandler.dispose();

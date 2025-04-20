@@ -383,7 +383,7 @@ class ModchartUtilities
 
         setVar("curStage", PlayState.SONG.stage);
 
-        set("mobile", FlxG.onMobile);
+        setVar("mobile", FlxG.onMobile);
 
         // callbacks
 
@@ -1976,7 +1976,7 @@ class ModchartUtilities
             Application.current.window.move(x, y);
         });
 
-        #if !ios
+        #if !mobile
         Lua_helper.add_callback(lua,"popupWindow",function(customWidth:Int, customHeight:Int, ?customX:Int, ?customName:String) {
             var display = Application.current.window.display.currentMode;
 
@@ -2918,7 +2918,7 @@ class ModchartUtilities
             return 0.0;
         });
 
-        #if !ios
+        #if !mobile
         Lua_helper.add_callback(lua,"setupTransparentWindow", function() {
             FlxTransWindow.setupTransparentWindow();
         });

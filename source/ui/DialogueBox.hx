@@ -84,7 +84,7 @@ class DialogueBox extends FlxSpriteGroup
 		if(dialogue_Shadow != null)
 			dialogue_Shadow.text = dialogue.text;
 
-		if(PlayerSettings.player1.controls.ACCEPT #if mobile || MobileControls.justPressedAny() #end)
+		if(PlayerSettings.player1.controls.ACCEPT #if ios || iosControls.justPressedAny() #end)
 		{
 			FlxG.sound.play(Paths.sound('clickText'), 0.8);
 
