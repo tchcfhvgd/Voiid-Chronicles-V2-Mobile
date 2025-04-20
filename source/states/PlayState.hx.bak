@@ -258,7 +258,7 @@ class PlayState extends MusicBeatState
 
 	public var centerCamera:Bool = false;
 
-	//public var iosControls:iosControls;
+	public var iosControls:iosControls;
 
 	public function new(?_replay:Replay)
 	{
