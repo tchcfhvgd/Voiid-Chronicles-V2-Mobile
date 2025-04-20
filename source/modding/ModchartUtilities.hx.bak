@@ -383,7 +383,7 @@ class ModchartUtilities
 
         setVar("curStage", PlayState.SONG.stage);
 
-        set("mobile", FlxG.onMobile);
+        set("mobile", FlxG.onMobile
 
         // callbacks
 
