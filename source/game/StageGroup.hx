@@ -93,7 +93,7 @@ class StageGroup extends FlxGroup
 
         if(stage != "")
         {
-            if(!bruhStages.contains(stage) #if !ios && stagesNormally.contains(stage) #end)
+            if(!bruhStages.contains(stage) #if !mobile && stagesNormally.contains(stage) #end)
             {
                 var JSON_Data:String = "";
     
