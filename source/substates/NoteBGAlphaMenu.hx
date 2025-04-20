@@ -35,8 +35,8 @@ class NoteBGAlphaMenu extends MusicBeatSubstate
     override function update(elapsed:Float) {
         super.update(elapsed);
 
-        var leftP = controls.LEFT_P #if mobile || MobileControls.leftPress() #end;
-		var rightP = controls.RIGHT_P #if mobile || MobileControls.rightPress() #end;
+        var leftP = controls.LEFT_P #if ios || iosControls.leftPress() #end;
+		var rightP = controls.RIGHT_P #if ios || iosControls.rightPress() #end;
 
         var back = controls.BACK;
 

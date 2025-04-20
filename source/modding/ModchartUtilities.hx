@@ -257,8 +257,8 @@ class ModchartUtilities
         "inMultiplayerSession", "multiplayerEnded", "multiplayerSessionEndcheck", "badChart", "fdgod2PlayerSide", "progress", "goodNoteHit", "wasGoodHit", "strumTime", "notes", "unspawnNotes"];
         var classBlackList = ["ChartChecker", "GameJoltStuff", "Popup", "FlxGameJolt", "Options", "AwardManager", "Multiplayer", "GameJolt", "Leaderboards"];
 
-        //some shaders just dont work at all on mobile
-        var mobileShaderBlacklist:Array<String> = ["BloomEffect", "ChromAbEffect", "ChromAbBlueSwapEffect", "VignetteEffect", "SparkEffect", "MosaicEffect", "ColorFillEffect", "SobelEffect"]; 
+        //some shaders just dont work at all on ios
+        var iosShaderBlacklist:Array<String> = ["BloomEffect", "ChromAbEffect", "ChromAbBlueSwapEffect", "VignetteEffect", "SparkEffect", "MosaicEffect", "ColorFillEffect", "SobelEffect"]; 
 
         oldMultiplier = PlayState.songMultiplier;
 
@@ -290,7 +290,7 @@ class ModchartUtilities
 
         if(path == null)
         {
-            #if mobile
+            #if ios
             path = SUtil.getStorageDirectory() + Paths.lua("modcharts/" + PlayState.SONG.modchartPath);
             #else 
             path = PolymodAssets.getPath(Paths.lua("modcharts/" + PlayState.SONG.modchartPath));
@@ -302,7 +302,7 @@ class ModchartUtilities
 
         if (result != 0)
         {
-            #if !mobile
+            #if !ios
             Application.current.window.alert("lua COMPILE ERROR:\n" + Lua.tostring(lua,result),"Leather Engine Modcharts");
             #end
             //FlxG.switchState(new MainMenuState());
@@ -383,11 +383,7 @@ class ModchartUtilities
 
         setVar("curStage", PlayState.SONG.stage);
 
-        #if mobile
-        setVar("mobile", true);
-        #else 
-        setVar("mobile", false);
-        #end
+        set("mobile", FlxG.onMobile
 
         // callbacks
 
@@ -457,7 +453,7 @@ class ModchartUtilities
             trace(str);
         });
 
-        #if VIDEOS_ALLOWED
+        #if desktop
         Lua_helper.add_callback(lua,"startLuaVideo", function(name:String = "", ext:String = ".mp4") {
             
             var foundFile:Bool = false;
@@ -639,8 +635,8 @@ class ModchartUtilities
 
             }
 
-            #if mobile
-            var controls = PlayState.instance.mobileControls;
+            #if ios
+            var controls = PlayState.instance.iosControls;
             if (controls.getDodgeJustPressed())
                 return true;
             #end
@@ -1980,7 +1976,7 @@ class ModchartUtilities
             Application.current.window.move(x, y);
         });
 
-        #if !mobile
+        #if !ios
         Lua_helper.add_callback(lua,"popupWindow",function(customWidth:Int, customHeight:Int, ?customX:Int, ?customName:String) {
             var display = Application.current.window.display.currentMode;
 
@@ -2672,9 +2668,9 @@ class ModchartUtilities
             if (!utilities.Options.getData("shaders"))
                 return;
 
-            #if mobile
+            #if ios
             //Application.current.window.alert("loading shader: "+classString,"Leather Engine Modcharts");
-            if (mobileShaderBlacklist.contains(classString))
+            if (iosShaderBlacklist.contains(classString))
                 return;
             #end
 
@@ -2922,7 +2918,7 @@ class ModchartUtilities
             return 0.0;
         });
 
-        #if !mobile
+        #if !ios
         Lua_helper.add_callback(lua,"setupTransparentWindow", function() {
             FlxTransWindow.setupTransparentWindow();
         });

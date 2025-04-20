@@ -115,7 +115,7 @@ class MusicBeatState extends FlxUIState
 
 		Application.current.window.title = windowNamePrefix + windowNameSuffix;		
 
-		if (FlxG.mouse.justPressed || FlxG.mouse.justMoved || FlxG.keys.justPressed.ANY #if mobile || MobileControls.justPressedAny() #end)
+		if (FlxG.mouse.justPressed || FlxG.mouse.justMoved || FlxG.keys.justPressed.ANY #if ios || iosControls.justPressedAny() #end)
 		{
 			usingController = false;
 		}

@@ -22,6 +22,9 @@ import openfl.Lib;
 import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
+#if mobile
+import mobile.states.CopyState;
+#end
 
 class Main extends Sprite
 {
@@ -29,7 +32,7 @@ class Main extends Sprite
 	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var initialState:Class<FlxState> = TitleState; // The FlxState the game starts with.
 	var zoom:Float = -1; // If -1, zoom is automatically calculated to fit the window dimensions.
-	var framerate:Int = 120; // How many frames per second the game should run at.
+	var framerate:Int = 60; // How many frames per second the game should run at.
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
 
@@ -43,8 +46,14 @@ class Main extends Sprite
 	public function new()
 	{
 		#if mobile
-		SUtil.uncaughtErrorHandler();
+		#if android
+		StorageUtil.requestPermissions();
 		#end
+		Sys.setCwd(StorageUtil.getStorageDirectory());
+		#end
+
+		utilities.CrashHandler.init();
+		
 		super();
 
 		if (stage != null)
@@ -71,36 +80,14 @@ class Main extends Sprite
 
 	private function setupGame():Void
 	{
-		var stageWidth:Int = Lib.current.stage.stageWidth;
-		var stageHeight:Int = Lib.current.stage.stageHeight;
-
-		if (zoom == -1)
-		{
-			var ratioX:Float = stageWidth / gameWidth;
-			var ratioY:Float = stageHeight / gameHeight;
-			zoom = Math.min(ratioX, ratioY);
-			gameWidth = Math.ceil(stageWidth / zoom);
-			gameHeight = Math.ceil(stageHeight / zoom);
-		}
-
-		#if !cpp
-		framerate = 60;
-		#end
-
-		#if !debug
-		initialState = TitleState;
-		#end
-
 		#if cpp 
 		cpp.vm.Gc.enable(true);
 		#end
 
-		SUtil.checkFiles();
-
 		addChild(new Bitmap(new BitmapData(Std.int(Capabilities.screenResolutionX),
 		Std.int(Capabilities.screenResolutionY), false, FlxColor.fromRGB(1,1,1)), true));
 
-		var game:FlxGame = new FlxGame(gameWidth, gameHeight, initialState, #if (flixel < "5.0.0") zoom, #end framerate, framerate, skipSplash, startFullscreen);
+		var game:FlxGame = new FlxGame(gameWidth, gameHeight, #if mobile !CopyState.checkExistingFiles() ? CopyState : #end initialState, #if (flixel < "5.0.0") zoom, #end framerate, framerate, skipSplash, startFullscreen);
 		addChild(game);
 
 		FlxGraphic.defaultPersist = false;
@@ -182,19 +169,14 @@ class Main extends Sprite
 
 		popupManager = new PopupManager();
 		addChild(popupManager);
-		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
-	}
-
-	function onCrash(e:UncaughtErrorEvent)
-	{
-		#if desktop
-		var callstack:Array<StackItem> = CallStack.exceptionStack(true);
-		trace(CallStack.toString(callstack));
-		trace(e.error);
-
-		Lib.application.window.alert(CallStack.toString(callstack), e.error); //popup crash with callstack and error message
-
-		Sys.exit(0);
+		
+		#if mobile
+		FlxG.scaleMode = new mobile.MobileScaleMode();
+		#end
+		
+		#if mobile
+		lime.system.System.allowScreenTimeout = Options.getData("screenSaver");
+		#if android FlxG.android.preventDefaultKeys = [BACK]; #end
 		#end
 	}
 

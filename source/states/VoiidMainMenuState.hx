@@ -268,7 +268,7 @@ class VoiidMainMenuState extends MusicBeatState
         var freeplayUnlocked:Bool = (Options.getData(saveStr, "progress") != null);
         var onlineUnlocked:Bool = (Options.getData("beat_wiik 3", "progress") != null);
         onlineUnlocked = true;
-        #if mobile
+        #if ios
         if (VoiidMainMenuState.devBuild)
             freeplayUnlocked = true;
         #end
@@ -277,7 +277,7 @@ class VoiidMainMenuState extends MusicBeatState
         storyButton.makeGraphic(363, 363, 0xFF4B05B5);
         storyButton.buttonFunc = function()
         {
-            //#if !mobile
+            //#if !ios
             if (!wiiksUnlocked[selectedWiik]) //locked week
             {
                 storyButton.clicked = false;
@@ -687,7 +687,7 @@ class MainMenuButton extends FlxSprite
 
     function doesOverlap() : Bool
     {
-		#if mobile
+		#if ios
 		for (touch in FlxG.touches.list)
 		{
 			if (touch.overlaps(this))
@@ -698,7 +698,7 @@ class MainMenuButton extends FlxSprite
     }
     function isJustPressed() : Bool
     {
-        #if mobile
+        #if ios
 		for (touch in FlxG.touches.list)
 		{
 			if (touch.justPressed && touch.overlaps(this))
@@ -867,7 +867,7 @@ class ContinueWeekSubstate extends MusicBeatSubstate
     }
     function doesOverlap(spr:FlxSprite) : Bool
     {
-        #if mobile
+        #if ios
         for (touch in FlxG.touches.list)
         {
             if (touch.overlaps(spr))
@@ -878,7 +878,7 @@ class ContinueWeekSubstate extends MusicBeatSubstate
     }
     function isJustPressed() : Bool
     {
-        #if mobile
+        #if ios
 		for (touch in FlxG.touches.list)
 		{
 			if (touch.justPressed)

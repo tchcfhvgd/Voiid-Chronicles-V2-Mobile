@@ -48,8 +48,8 @@ class OptionsMenu extends MusicBeatState
 
 	function getEnterPress()
 	{
-		#if mobile
-		if (MobileControls.justPressedAny())
+		#if ios
+		if (iosControls.justPressedAny())
 			return true;
 		#end
 		return FlxG.keys.justPressed.ENTER;
@@ -68,7 +68,7 @@ class OptionsMenu extends MusicBeatState
 		],
 		[
 			"Gameplay",
-			//#if !mobile //still allow because of controller support
+			//#if !ios //still allow because of controller support
 			new ControlMenuSubStateOption("Binds", 1),
 			//#end
 			new BoolOption("Downscroll", "downscroll", 2),
@@ -376,8 +376,8 @@ class OptionsMenu extends MusicBeatState
 				curSelected += 1;
 				FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 			}
-			#if mobile
-			var vPress:Int = MobileControls.verticalPressOptions(page, curSelected);
+			#if ios
+			var vPress:Int = iosControls.verticalPressOptions(page, curSelected);
 			switch(vPress)
 			{
 				case -1: 

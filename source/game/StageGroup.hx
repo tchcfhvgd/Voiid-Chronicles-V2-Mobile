@@ -93,7 +93,7 @@ class StageGroup extends FlxGroup
 
         if(stage != "")
         {
-            if(!bruhStages.contains(stage) #if !mobile && stagesNormally.contains(stage) #end)
+            if(!bruhStages.contains(stage) #if !ios && stagesNormally.contains(stage) #end)
             {
                 var JSON_Data:String = "";
     
@@ -407,7 +407,7 @@ class StageGroup extends FlxGroup
             {
                 if(stage_Data.scriptName != null && Assets.exists(Paths.lua("stage data/" + stage_Data.scriptName)))
                 {
-                    #if mobile 
+                    #if ios 
                     stageScript = ModchartUtilities.createModchartUtilities(SUtil.getStorageDirectory() + Paths.lua("stage data/" + stage_Data.scriptName));
                     #else 
                     stageScript = ModchartUtilities.createModchartUtilities(PolymodAssets.getPath(Paths.lua("stage data/" + stage_Data.scriptName)));

@@ -14,8 +14,8 @@ import game.GameHUD;
 import sys.FileSystem;
 #end
 
-#if BIT_64
-import modding.FlxVideo;
+#if VIDEOS_ALLOWED
+import hxvlc.flixel.FlxVideo;
 #end
 
 #if discord_rpc
@@ -98,9 +98,6 @@ typedef SpamSection =
 class PlayState extends MusicBeatState
 {
 	public static var instance:PlayState = null;
-	#if VIDEOS_ALLOWED
-	public var luaVideo:FlxVideo = null;
-	#end
 	public var tweenManager:FlxTweenManager;
 
 	public static var curStage:String = '';
@@ -261,7 +258,7 @@ class PlayState extends MusicBeatState
 
 	public var centerCamera:Bool = false;
 
-	public var mobileControls:MobileControls;
+	public var iosControls:iosControls;
 
 	public function new(?_replay:Replay)
 	{
@@ -527,7 +524,7 @@ class PlayState extends MusicBeatState
 			characterPlayingAs = 1;
 
 		//testing
-		#if mobile
+		#if ios
 		//utilities.Options.setData(true, "noDeath");
 		//utilities.Options.setData(false, "botplay");
 		#end
@@ -979,7 +976,7 @@ class PlayState extends MusicBeatState
 			if(Assets.exists(Paths.file("globalScripts/")) && !utilities.Options.getData("forceDisableScripts"))
 			{
 				//trace('found globals folder');
-				#if !mobile 
+				#if !ios 
 				var folder:String = PolymodAssets.getPath(Paths.file("globalScripts/"));
 				#else 
 				var folder:String = SUtil.getStorageDirectory() + "mods/Voiid Chronicles/globalScripts/";
@@ -1000,7 +997,7 @@ class PlayState extends MusicBeatState
 				}
 			}
 
-			#if mobile 
+			#if ios 
 			if (!utilities.Options.getData("forceDisableScripts"))
 			{
 				var scriptList = CoolUtil.coolTextFile(Paths.txt('globalScriptList'));
@@ -1020,13 +1017,13 @@ class PlayState extends MusicBeatState
 			#end
 
 			if((Assets.exists(Paths.file("data/song data/"+SONG.song+"/")) 
-				#if mobile
+				#if ios
 				|| FileSystem.exists(SUtil.getStorageDirectory() + "mods/Voiid Chronicles/data/song data/"+SONG.song+"/") 
 				#end
 				) && !utilities.Options.getData("forceDisableScripts"))
 			{
 				//trace('found globals folder');
-				#if !mobile 
+				#if !ios 
 				var folder:String = PolymodAssets.getPath(Paths.file("data/song data/"+SONG.song+"/"));
 				#else 
 				var folder:String = SUtil.getStorageDirectory() + "mods/Voiid Chronicles/data/song data/"+SONG.song+"/";
@@ -1330,12 +1327,12 @@ class PlayState extends MusicBeatState
 			{
 				#if linc_luajit
 				if(!event_luas.exists(event[0].toLowerCase()) && (Assets.exists(Paths.lua("event data/" + event[0].toLowerCase())) 
-					#if mobile
+					#if ios
 					|| FileSystem.exists(SUtil.getStorageDirectory() + Paths.lua("event data/" + event[0].toLowerCase()))
 					#end
 				) )
 				{
-					#if mobile 
+					#if ios 
 					event_luas.set(event[0].toLowerCase(), ModchartUtilities.createModchartUtilities(SUtil.getStorageDirectory() + Paths.lua("event data/" + event[0].toLowerCase())));
 					#else
 					event_luas.set(event[0].toLowerCase(), ModchartUtilities.createModchartUtilities(PolymodAssets.getPath(Paths.lua("event data/" + event[0].toLowerCase()))));
@@ -1492,49 +1489,28 @@ class PlayState extends MusicBeatState
 			}
 		});
 	}
+	
+	#if VIDEOS_ALLOWED
+	var videoHandler:FlxVideo = new FlxVideo();
+	#end
 
-	public function startVideo(name:String, ?ext:String, ?endSongVar:Bool = false):Void {
-		#if BIT_64
-		#if VIDEOS_ALLOWED
-		if(endSongVar)
-		{
+	function startVideo(name:String, ?ext:String, ?endSongVar:Bool = false):Void {
+		inCutscene = true;
+
+		if (endSongVar) {
 			paused = true;
 			canPause = false;
 			switchedStates = true;
 			endingSong = true;
 		}
-		
-		var foundFile:Bool = false;
-		var fileName:String = #if sys Sys.getCwd() + PolymodAssets.getPath(Paths.video(name, ext)) #else Paths.video(name, ext) #end;
 
-		#if sys
-		if(FileSystem.exists(fileName)) {
-			foundFile = true;
-		}
-		#end
-
-		if(!foundFile) {
-			fileName = Paths.video(name);
-
-			#if sys
-			if(FileSystem.exists(fileName)) {
-			#else
-			if(OpenFlAssets.exists(fileName)) {
-			#end
-				foundFile = true;
-			}
-		}
-
-		if(foundFile) {
-			var bg = new FlxSprite(-FlxG.width, -FlxG.height).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
-			bg.scrollFactor.set();
-			bg.cameras = [camHUD];
-			add(bg);
-
-			(new FlxVideo(fileName)).finishCallback = function() {
-				remove(bg);
-
-				if(endingSong) {
+		#if VIDEOS_ALLOWED
+		if (videoHandler.load(Paths.getModPath(Paths.video(name, ext))))
+		videoHandler.play());
+		videoHandler.onEndReached.add(function() {
+			videoHandler.dispose();
+			FlxG.removeChild(videoHandler);
+			if(endingSong) {
 					openSubState(new ResultsScreenSubstate());
 				} else {
 					if(cutscene.cutsceneAfter == null)
@@ -1571,22 +1547,12 @@ class PlayState extends MusicBeatState
 						}
 					}
 				}
-			}
-			return;
-		} else {
-			FlxG.log.warn('Couldnt find video file: ' + fileName);
-		}
-		#end
-
-		if(endingSong) {
-			openSubState(new ResultsScreenSubstate());
-		} else { #end
-			if(!endSongVar)
-				startCountdown();
-			else
-				openSubState(new ResultsScreenSubstate());
-		#if BIT_64
-		}
+				return;
+		}, true);
+		FlxG.addChildBelowMouse(videoHandler);
+		#else
+		bruhDialogue(endSongVar);
+		trace("Videos aren't supported on this platform!", ERROR);
 		#end
 	}
 
@@ -1665,11 +1631,11 @@ class PlayState extends MusicBeatState
 			//	generateStaticArrows(0, true);
 			//}
 		}
-		#if mobile
-		mobileControls = new MobileControls();
-		mobileControls.generateButtons(characterPlayingAs == 0 ? SONG.playerKeyCount : SONG.keyCount, songHasDodges);
-		mobileControls.cameras = [camTransition];
-		add(mobileControls);
+		#if ios
+		iosControls = new iosControls();
+		iosControls.generateButtons(characterPlayingAs == 0 ? SONG.playerKeyCount : SONG.keyCount, songHasDodges);
+		iosControls.cameras = [camTransition];
+		add(iosControls);
 		#end
 
 
@@ -3450,11 +3416,11 @@ class PlayState extends MusicBeatState
 					pause = true;
 			}
 		}
-		#if mobile 
+		#if ios 
 		if(controls.BACK)
 			pause = true;
 
-		mobileControls.visible = !MusicBeatState.usingController;
+		iosControls.visible = !MusicBeatState.usingController;
 		#end
 		if(pause && startedCountdown && canPause && !switchedStates)
 		{
@@ -3765,7 +3731,7 @@ class PlayState extends MusicBeatState
 					difficulty = '-' + storyDifficultyStr.toLowerCase();
 
 				var song:String = PlayState.storyPlaylist[0].toLowerCase();
-				#if mobile
+				#if ios
 				song = PlayState.storyPlaylist[0];
 				difficulty = "-"+diffLoadedInWith;
 				#end
@@ -4247,26 +4213,26 @@ class PlayState extends MusicBeatState
 					releasedArray = [];
 					heldArray = [];
 
-					#if mobile 
-					mobileControls.updateInput();
+					#if ios 
+					iosControls.updateInput();
 					#end
 	
 					for(i in 0...binds.length)
 					{
-						#if mobile 
-						if (mobileControls.hasDodges && i >= Math.floor(mobileControls.keyCount/2))
+						#if ios 
+						if (iosControls.hasDodges && i >= Math.floor(iosControls.keyCount/2))
 						{
-							justPressedArray[i] = mobileControls.justPressed[i+1];
-							releasedArray[i] = mobileControls.released[i+1];
-							justReleasedArray[i] = mobileControls.justReleased[i+1];
-							heldArray[i] = mobileControls.pressed[i+1];
+							justPressedArray[i] = iosControls.justPressed[i+1];
+							releasedArray[i] = iosControls.released[i+1];
+							justReleasedArray[i] = iosControls.justReleased[i+1];
+							heldArray[i] = iosControls.pressed[i+1];
 						}
 						else 
 						{
-							justPressedArray[i] = mobileControls.justPressed[i];
-							releasedArray[i] = mobileControls.released[i];
-							justReleasedArray[i] = mobileControls.justReleased[i];
-							heldArray[i] = mobileControls.pressed[i];
+							justPressedArray[i] = iosControls.justPressed[i];
+							releasedArray[i] = iosControls.released[i];
+							justReleasedArray[i] = iosControls.justReleased[i];
+							heldArray[i] = iosControls.pressed[i];
 						}
 		
 						#else
@@ -4278,7 +4244,7 @@ class PlayState extends MusicBeatState
 		
 						if(releasedArray[i] == true)
 						{
-							#if !mobile 
+							#if !ios 
 							if (getCorrectKeyCount(true) == 4)
 							{
 								justPressedArray[i] = FlxG.keys.checkStatus(FlxKey.fromString(bruhBinds[i]), FlxInputState.JUST_PRESSED);
@@ -4295,7 +4261,7 @@ class PlayState extends MusicBeatState
 							}
 							#end
 
-							//controller support still works on mobile
+							//controller support still works on ios
 							var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 							if (gamepad != null)
 							{
@@ -5697,7 +5663,7 @@ class PlayState extends MusicBeatState
 			#if linc_luajit
 			if(!event_luas.exists(event[0].toLowerCase()) && Assets.exists(Paths.lua("event data/" + event[0].toLowerCase())))
 			{
-				#if mobile 
+				#if ios 
 				event_luas.set(event[0].toLowerCase(), ModchartUtilities.createModchartUtilities(SUtil.getStorageDirectory() + Paths.lua("event data/" + event[0].toLowerCase())));
 				#else
 				event_luas.set(event[0].toLowerCase(), ModchartUtilities.createModchartUtilities(PolymodAssets.getPath(Paths.lua("event data/" + event[0].toLowerCase()))));
@@ -5719,7 +5685,7 @@ class PlayState extends MusicBeatState
 			#if linc_luajit
 			if(!event_luas.exists(noteType.toLowerCase()) && Assets.exists(Paths.lua("arrow types/" + noteType)))
 			{
-				#if mobile 
+				#if ios 
 				event_luas.set(noteType.toLowerCase(), ModchartUtilities.createModchartUtilities(SUtil.getStorageDirectory() + Paths.lua("arrow types/" + noteType)));		
 				#else
 				event_luas.set(noteType.toLowerCase(), ModchartUtilities.createModchartUtilities(PolymodAssets.getPath(Paths.lua("arrow types/" + noteType))));			

@@ -62,7 +62,7 @@ class MusicBeatSubstate extends FlxSubState
 
 		Application.current.window.title = MusicBeatState.windowNamePrefix + MusicBeatState.windowNameSuffix;
 
-		if (FlxG.mouse.justPressed || FlxG.mouse.justMoved || FlxG.keys.justPressed.ANY #if mobile || MobileControls.justPressedAny() #end)
+		if (FlxG.mouse.justPressed || FlxG.mouse.justMoved || FlxG.keys.justPressed.ANY #if ios || iosControls.justPressedAny() #end)
 		{
 			usingController = false;
 		}

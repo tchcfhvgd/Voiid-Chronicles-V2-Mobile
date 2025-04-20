@@ -7,6 +7,10 @@ import lime.utils.Assets;
 
 using StringTools;
 
+@:cppFileCode('
+	#include <iostream>
+	#include <thread>
+')
 class CoolUtil
 {
 	public static var difficultyArray:Array<String> = ['EASY', "NORMAL", "HARD"];
@@ -228,4 +232,22 @@ class CoolUtil
 
 		return formatted_bytes;
 	}
+	
+	public static function showPopUp(message:String, title:String):Void {
+		/*#if android
+		android.Tools.showAlertDialog(title, message, {name: "OK", func: null}, null);
+		#else*/
+		lime.app.Application.current.window.alert(message, title);
+		//#end
+	}
+
+	#if cpp
+    @:functionCode('
+        return std::thread::hardware_concurrency();
+    ')
+	#end
+    public static function getCPUThreadsCount():Int
+    {
+        return 1;
+    }
 }

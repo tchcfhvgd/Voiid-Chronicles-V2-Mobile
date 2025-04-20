@@ -78,7 +78,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		FlxG.camera.followLerp = 0.01 * (60 / Main.display.currentFPS);
 
-		if (controls.ACCEPT #if mobile || MobileControls.justPressedAny() #end)
+		if (controls.ACCEPT #if ios || iosControls.justPressedAny() #end)
 		{
 			endBullshit();
 		}

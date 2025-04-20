@@ -28,7 +28,7 @@ class Paths
 
 	static function getPath(file:String, type:AssetType, library:Null<String>)
 	{
-		#if mobile //dumb android shit idk
+		#if ios //dumb android shit idk
 		if (FileSystem.exists(SUtil.getStorageDirectory() + 'mods/Voiid Chronicles/shared/$file'))
 		{
 			return 'mods/Voiid Chronicles/shared/$file';
@@ -131,7 +131,7 @@ class Paths
 
 	static public function voices(song:String, ?difficulty:String)
 	{
-		#if !mobile 
+		#if !ios 
 		var prefix:String = "songs:assets/";
 		song = song.toLowerCase();
 		#else 
@@ -144,7 +144,7 @@ class Paths
 			if(Assets.exists(prefix+'songs/${song}/Voices-$difficulty.$SOUND_EXT'))
 			{
 				path = prefix+'songs/${song}/Voices-$difficulty.$SOUND_EXT';
-				#if mobile //dumb android shit idk
+				#if ios //dumb android shit idk
 				if (FileSystem.exists(SUtil.getStorageDirectory() + 'mods/Voiid Chronicles/$path'))
 				{
 					return 'mods/Voiid Chronicles/$path';
@@ -154,7 +154,7 @@ class Paths
 			}
 		}
 		path = prefix+'songs/${song}/Voices.$SOUND_EXT';
-		#if mobile //dumb android shit idk
+		#if ios //dumb android shit idk
 		if (FileSystem.exists(SUtil.getStorageDirectory() + 'mods/Voiid Chronicles/$path'))
 		{
 			return 'mods/Voiid Chronicles/$path';
@@ -165,7 +165,7 @@ class Paths
 
 	static public function inst(song:String, ?difficulty:String)
 	{
-		#if !mobile 
+		#if !ios 
 		var prefix:String = "songs:assets/";
 		song = song.toLowerCase();
 		#else 
@@ -178,7 +178,7 @@ class Paths
 			if(Assets.exists(prefix+'songs/${song}/Inst-$difficulty.$SOUND_EXT'))
 			{
 				path = prefix+'songs/${song}/Inst-$difficulty.$SOUND_EXT';
-				#if mobile //dumb android shit idk
+				#if ios //dumb android shit idk
 				if (FileSystem.exists(SUtil.getStorageDirectory() + 'mods/Voiid Chronicles/$path'))
 				{
 					return 'mods/Voiid Chronicles/$path';
@@ -188,7 +188,7 @@ class Paths
 			}
 		}
 		path = prefix+'songs/${song}/Inst.$SOUND_EXT';
-		#if mobile //dumb android shit idk
+		#if ios //dumb android shit idk
 		if (FileSystem.exists(SUtil.getStorageDirectory() + 'mods/Voiid Chronicles/$path'))
 		{
 			return 'mods/Voiid Chronicles/$path';
@@ -199,7 +199,7 @@ class Paths
 
 	static public function songEvents(song:String, ?difficulty:String)
 	{
-		#if !mobile 
+		#if !ios 
 		song = song.toLowerCase();
 		if (difficulty != null)
 			difficulty = difficulty.toLowerCase();

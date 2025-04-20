@@ -157,8 +157,8 @@ class PauseSubState extends MusicBeatSubstate
 		var downP = controls.DOWN_P;
 		var accepted = controls.ACCEPT;
 
-		#if mobile
-		var vPress:Int = MobileControls.verticalPressOptions(grpMenuShit, curSelected, PlayState.instance.camHUD);
+		#if ios
+		var vPress:Int = iosControls.verticalPressOptions(grpMenuShit, curSelected, PlayState.instance.camHUD);
 		//if (vPress == 0) //im so confused
 			//accepted = true;
 		#end
@@ -191,7 +191,7 @@ class PauseSubState extends MusicBeatSubstate
 			changeSelection(1);
 
 		
-		#if mobile
+		#if ios
 		if(!accepted)
 		{
 			switch(vPress)

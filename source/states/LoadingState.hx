@@ -287,7 +287,7 @@ class LoadingState extends MusicBeatState
 		/*var pickedImage = 'load0.png';
 		#if sys
 		var path = 'assets/images/loading/loadingscreen';
-		#if mobile 
+		#if ios 
 			path = SUtil.getStorageDirectory() + path;
 		#end
 		var list:Array<String> = [];

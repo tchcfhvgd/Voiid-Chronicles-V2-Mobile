@@ -71,7 +71,7 @@ class Option extends FlxTypedGroup<FlxSprite>
 	}
 	public function isSelected()
 	{
-		#if mobile
+		#if ios
 		for (touch in FlxG.touches.list)
 		{
 			if (touch.justPressed)

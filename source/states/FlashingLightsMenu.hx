@@ -12,9 +12,9 @@ class FlashingLightsMenu extends MusicBeatState
         super.create();
 
         var text = new FlxText(0,0,0,"Hey! Leather Engine has flashing lights\nPress Y to enable them, or anything else to not.\n(Any key closes this menu)", 32);
-        #if mobile 
+        #if ios 
         var t = "Hey! Leather Engine has flashing lights\nPress Y to enable them, or anything else to not.\n(Any key closes this menu)\n\n";
-        t += "This is a Mobile port of Voiid Chonicles,\nsome things may not work correctly\nor some songs maybe crash depending on your device.\n";
+        t += "This is a ios port of Voiid Chonicles,\nsome things may not work correctly\nor some songs maybe crash depending on your device.\n";
         t += "Shaders and Modcharts are disabled by default,\nyou can turn them back on but it may crash on some songs,\nif youre still getting crashes check\nGraphics->Optimization in the options menu and mess with the settings\n";
         text.size = 24;
         text.text = t;
@@ -33,8 +33,8 @@ class FlashingLightsMenu extends MusicBeatState
         super.update(elapsed);
 
         var pressed:Bool = false;
-        #if mobile
-		if (MobileControls.justPressedAny())
+        #if ios
+		if (iosControls.justPressedAny())
             pressed = true;
 		#end
 
