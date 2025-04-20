@@ -50,7 +50,7 @@
 
 
 	<!-- LEATHER ENGINE CUSTOMIZATION -->
-	<define name="VIDEOS_ALLOWED" if="web || windows" unless="32bit"/>
+	<define name="VIDEOS_ALLOWED" if="web || windows || mobile" unless="32bit"/>
 
 	<assets path="mods" embed="false" exclude="*.ogg" if="web"/>
 	<assets path="mods" embed="false" exclude="*.mp3" unless="web"/>
@@ -74,10 +74,7 @@
 		<library name="songs"    preload="false" />
 		<library name="shared"   preload="false" />
 		<library name="replays"  preload="false" />
-	</section>
-
-	<assets path="plugins/" if="VIDEOS_ALLOWED windows" />
-	<assets path="dlls/" rename='' if="VIDEOS_ALLOWED windows" />
+	</section>	
 	
 	<assets path="assets/songs"    library="songs"    exclude="*.ogg" if="web"/>
 	<assets path="assets/songs"    library="songs"    exclude="*.mp3" unless="web"/> 
@@ -115,11 +112,9 @@
 	<haxelib name="polymod"/>
 	
 	<haxelib name="discord_rpc" if="desktop"/>
-	<haxelib name="linc_luajit" if="desktop || android"/>
+	<haxelib name="linc_luajit" if="desktop || mobile"/>
 
-	<haxelib name="away3d"/>
-
-	<haxelib name="extension-androidtools" if="android" />
+	<haxelib name="away3d"/>	
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
@@ -155,26 +150,20 @@
 
 	<haxedef name="HXCPP_GC_BIG_BLOCKS" />
 
-	<!--Always enable Null Object Reference check-->
-	<haxedef name="HXCPP_CHECK_POINTER" if="android" />
-	<haxedef name="HXCPP_STACK_LINE" if="android" />
-	<haxedef name="HXCPP_STACK_TRACE" if="android" />
-
-	<section if="android">
-		<config>
-			<!--Gradle-->
-			<android gradle-version="7.4.2" gradle-plugin="7.3.1" />
-
-			<!--Target SDK-->
-			<android target-sdk-version="29" if="${lime &lt; 8.1.0}" />
-		</config>
+	<section if="cpp">
+		<haxedef name="HXCPP_CHECK_POINTER" />
+		<haxedef name="HXCPP_STACK_LINE" />
+		<haxedef name="HXCPP_STACK_TRACE" />
+		<haxedef name="HXCPP_CATCH_SEGV" />
 	</section>
 
-	<section if="ios">
-		<!--Dependency--> 
-		<dependency name="Metal.framework" if="${lime &lt; 8.0.0}" />
-	</section>
+	<haxedef name='no-deprecation-warnings' />
 
+	<haxedef name="SHARE_MOBILE_FILES" if="mobile" />
+
+	<!-- Do whatever you want I'm tired uninstall and install everytime -->
+	<certificate path="key.keystore" password="psychengine" alias="psychport" alias-password="psychengine" if="android" unless="debug" />
+		
 	<!-- _________________________________ Custom _______________________________ -->
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
