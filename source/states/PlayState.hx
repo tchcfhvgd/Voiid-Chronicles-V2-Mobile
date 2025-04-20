@@ -1506,7 +1506,7 @@ class PlayState extends MusicBeatState
 
 		#if VIDEOS_ALLOWED
 		if (videoHandler.load(Paths.getModPath(Paths.video(name, ext))))
-		videoHandler.play());
+		videoHandler.play();
 		videoHandler.onEndReached.add(function() {
 			videoHandler.dispose();
 			FlxG.removeChild(videoHandler);
