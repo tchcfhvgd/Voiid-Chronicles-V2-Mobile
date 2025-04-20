@@ -297,6 +297,22 @@
         {
             "option": "gpuTextures",
             "value": false
+        },
+        {
+            "option":          "mobileCAlpha",
+            "value": 0.6
+        },
+        {
+            "option":          "hitboxType",
+            "value": "No Gradient"
+        },
+        {
+            "option": "screenSaver",
+            "value": true
+        },
+        {
+            "option": "wideScreen",
+            "value": false
         }
     ]
 }
