@@ -284,6 +284,8 @@ class VoiidAwardsState extends MusicBeatState
         
 
         super.create();
+
+	addVirtualPad(UP_DOWN, B);
     }
     var goingBack:Bool = false;
     var scroll:Float = 0.0;
