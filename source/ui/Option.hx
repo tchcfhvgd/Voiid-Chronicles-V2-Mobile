@@ -375,6 +375,17 @@ class BloomMenuOption extends Option
     }
 }
 
+class MobileControlsAlphaOption extends Option
+{
+    override function update(elapsed:Float)
+    {
+        super.update(elapsed);
+
+        if(isSelected() && Alphabet_Text.targetY == 0 && enabled)
+			FlxG.state.openSubState(new mobile.substates.MobileControlsAlphaMenu());
+    }
+}
+
 
 /**
 * Option that opens the note bg alpha menu when selected.
