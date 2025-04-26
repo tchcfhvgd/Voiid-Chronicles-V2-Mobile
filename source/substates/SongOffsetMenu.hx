@@ -29,6 +29,8 @@ class SongOffsetMenu extends MusicBeatSubstate
         offsetText.text = "Offset: " + offset + "\nPress ENTER to round number\n";
         offsetText.screenCenter();
         add(offsetText);
+
+	addVirtualPad(LEFT_RIGHT, A_B);
     }
 
     override function update(elapsed:Float) {
