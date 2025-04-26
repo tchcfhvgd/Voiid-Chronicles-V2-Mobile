@@ -97,7 +97,7 @@ class Option extends FlxTypedGroup<FlxSprite>
 				return true;
 			}
 		}
-		return FlxG.keys.justPressed.ENTER;
+		return utilities.Controls.instance.ACCEPT;
 	}
 }
 
@@ -316,7 +316,7 @@ class GameStateOption extends Option
 	{
 		super.update(elapsed);
 
-		if(FlxG.keys.justPressed.ENTER && Alphabet_Text.targetY == 0)
+		if(utilities.Controls.instance.ACCEPT && Alphabet_Text.targetY == 0)
 		{
 			Mod_Enabled = !Mod_Enabled;
 			ModList.setModEnabled(Option_Value, Mod_Enabled);
