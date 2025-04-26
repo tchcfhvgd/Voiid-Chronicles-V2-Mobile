@@ -131,7 +131,7 @@ class OptionsMenu extends MusicBeatState
 		],
 		"Mobile Options" => [
 			new MobileControlsAlphaOption("Mobile Controls Opacity", 1),
-			new StringSaveOption("Hitbox Design", ["No Gradient", "No Gradient (Old)", "Gradient", "Hidden"], "hitboxType", 2)#if mobile ,
+			new StringSaveOption("Hitbox Design", ["No Gradient", "No Gradient (Old)", "Gradient", "Hidden"], 2, "hitboxType")#if mobile ,
 			new BoolOption("Wide Screen Mode", "wideScreen", 3),
 			new BoolOption("Allow Phone Screensaver", "screenSaver", 4)
 			#end
