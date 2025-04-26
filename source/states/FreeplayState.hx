@@ -177,7 +177,7 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 
-		return FlxG.keys.justPressed.ENTER;
+		return FlxG.keys.justPressed.ENTER || virtualPad.buttonA.justPressed;
 	}
 
 	override function create()
@@ -578,6 +578,8 @@ class FreeplayState extends MusicBeatState
 		
 
 		super.create();
+
+		addVirtualPad(LEFT_FULL, A_B_C_X_Y_Z);
 	}
 
 	function updateDiffImage()
@@ -820,7 +822,7 @@ class FreeplayState extends MusicBeatState
 
 		var leftP = controls.LEFT_P;
 		var rightP = controls.RIGHT_P;
-		var shift = FlxG.keys.pressed.SHIFT;
+		var shift = FlxG.keys.pressed.SHIFT || virtualPad.buttonZ.pressed;
 
 		var upP = controls.UP_P;
 		var downP = controls.DOWN_P;
@@ -1101,7 +1103,7 @@ class FreeplayState extends MusicBeatState
 			}
 
 			#if PRELOAD_ALL
-			if (FlxG.keys.justPressed.SPACE && songs.length > 0)
+			if (FlxG.keys.justPressed.SPACE || virtualPad.buttonX.justPressed && songs.length > 0)
 			{
 				destroyFreeplayVocals();
 
@@ -1151,7 +1153,7 @@ class FreeplayState extends MusicBeatState
 			#end
 			#end
 
-			if(controls.RESET && !shift && songs.length > 0)
+			if(controls.RESET || virtualPad.buttonY.justPressed && !shift && songs.length > 0)
 			{
 				openSubState(new ResetScoreSubstate(songs[curSelected].songName, curDiffString));
 				changeSelection();
