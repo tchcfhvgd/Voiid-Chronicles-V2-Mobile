@@ -33,7 +33,7 @@ import flixel.input.FlxPointer;
 import flixel.input.IFlxInput;
 import flixel.input.touch.FlxTouch;
 import flixel.math.FlxPoint;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.util.FlxDestroyUtil;
 
@@ -224,8 +224,23 @@ class TypedMobileButton<T:FlxSprite> extends FlxSprite implements IFlxInput {
 		input = new FlxInput(0);
 	}
 
+	override public function graphicLoaded():Void {
+		super.graphicLoaded();
+
+		setupAnimation('normal', MobileButton.NORMAL);
+		setupAnimation('highlight', MobileButton.HIGHLIGHT);
+		setupAnimation('pressed', MobileButton.PRESSED);
+	}
+
 	function loadDefaultGraphic():Void
 		loadGraphic('flixel/images/ui/button.png', true, 80, 20);
+
+	function setupAnimation(animationName:String, frameIndex:Int):Void
+	{
+		// make sure the animation doesn't contain an invalid frame
+		frameIndex = Std.int(Math.min(frameIndex, animation.frames - 1));
+		animation.add(animationName, [frameIndex]);
+	}
 
 	/**
 	 * Called by the game state when state is changed (if this object belongs to the state)
