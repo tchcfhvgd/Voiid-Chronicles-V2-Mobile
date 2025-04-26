@@ -130,10 +130,10 @@ class OptionsMenu extends MusicBeatState
 			new BoolOption("Disable Debug Menus", "disableDebugMenus", 7),
 		],
 		"Mobile Options" => [
-			new GameSubStateOption("Mobile Controls Opacity", mobile.substates.MobileControlsAlphaMenu),
-			new StringSaveOption("Hitbox Design", ["No Gradient", "No Gradient (Old)", "Gradient", "Hidden"], "hitboxType")#if mobile ,
-			new BoolOption("Wide Screen Mode", "wideScreen"),
-			new BoolOption("Allow Phone Screensaver", "screenSaver")
+			new MobileControlsAlphaOption("Mobile Controls Opacity", 1),
+			new StringSaveOption("Hitbox Design", ["No Gradient", "No Gradient (Old)", "Gradient", "Hidden"], "hitboxType", 2)#if mobile ,
+			new BoolOption("Wide Screen Mode", "wideScreen", 3),
+			new BoolOption("Allow Phone Screensaver", "screenSaver", 4)
 			#end
 		],
 		[
