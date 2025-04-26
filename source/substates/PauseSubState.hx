@@ -142,6 +142,9 @@ class PauseSubState extends MusicBeatSubstate
 		cameras = [PlayState.instance.camTransition];
 		if (PlayState.instance.usedLuaCameras)
 			cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]];
+
+		addVirtualPad(PlayState.chartingMode ? LEFT_FULL : UP_DOWN, A_B);
+		addVirtualPadCamera();
 	}
 
 	var justPressedAcceptLol:Bool = true;
