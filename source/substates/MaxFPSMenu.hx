@@ -31,6 +31,8 @@ class MaxFPSMenu extends MusicBeatSubstate
         offsetText.text = "Max FPS: " + fps;
         offsetText.screenCenter();
         add(offsetText);
+
+	addVirtualPad(LEFT_RIGHT, A_B);
     }
 
     override function update(elapsed:Float) {
