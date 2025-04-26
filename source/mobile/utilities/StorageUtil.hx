@@ -41,7 +41,7 @@ using StringTools;
  * A storage utility class for mobile platforms.
  * Provides methods for handling storage directories, creating directories, saving content, and requesting permissions for android.
  * 
- * @author Homura Akemi (HomuHomu833) and Karim Akra
+ * @author Lily Ross (mcagabe19) and Karim Akra
  */
 class StorageUtil {
 	#if sys
@@ -61,14 +61,11 @@ class StorageUtil {
 	 * @param fileData The content to save in the file. Defaults to a placeholder string.
 	 */
 	public static function saveContent(fileName:String, fileData:String, ?alert:Bool = true):Void {
-		final folder:String = #if android StorageUtil.getExternalStorageDirectory() + #else Sys.getCwd() + #end
-		'saves/';
-
 		try {
-			if (!FileSystem.exists(folder))
-				FileSystem.createDirectory(folder);
+			if (!FileSystem.exists('saves'))
+				FileSystem.createDirectory('saves');
 
-			File.saveContent('$folder$fileName', fileData);
+			File.saveContent('saves/$fileName', fileData);
 			if (alert)
 				CoolUtil.showPopUp('$fileName has been saved.', "Success!");
 		} catch (e:Dynamic)
@@ -79,11 +76,6 @@ class StorageUtil {
 	}
 
 	#if android
-	// always force path due to haxe
-	@:dox(hide)
-	public static function getExternalStorageDirectory():String
-		return '/sdcard/.LeatherEngine/';
-
 	/**
 	 * Requests Android permissions for external storage access.
 	 */
@@ -115,15 +107,8 @@ class StorageUtil {
 			CoolUtil.showPopUp('Please create directory to\n' + StorageUtil.getStorageDirectory() + '\nPress OK to close the game', 'Error!');
 			lime.system.System.exit(1);
 		}
-
-		try {
-			if (!FileSystem.exists(StorageUtil.getExternalStorageDirectory()))
-				FileSystem.createDirectory(StorageUtil.getExternalStorageDirectory());
-		} catch (e:Dynamic) {
-			CoolUtil.showPopUp('Please create directory to\n' + StorageUtil.getExternalStorageDirectory() + '\nPress OK to close the game', 'Error!');
-			lime.system.System.exit(1);
-		}
 	}
 	#end
+
 	#end
 }
