@@ -165,6 +165,8 @@ class VoiidCreditsMenuState extends MusicBeatState
         changeSection(0);
 
         super.create();
+
+	addVirtualPad(LEFT_FULL, A_B);
     }
     var iconScaleMult:Float = 1;
     var goingBack:Bool = false;
