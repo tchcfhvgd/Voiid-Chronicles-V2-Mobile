@@ -44,6 +44,8 @@ class OptionsMenu extends MusicBeatState
 
 	public static var inMenu = false;
 
+	var removeVpad:Bool = true;
+
 	public var hud:GameHUD;
 
 	function getEnterPress()
@@ -63,6 +65,7 @@ class OptionsMenu extends MusicBeatState
 			new PageOption("HUD", 2, "HUD"),
 			new PageOption("Graphics", 3, "Graphics"),
 			new PageOption("Misc", 4, "Misc"),
+			new PageOption("Mobile Options", "Mobile Options"),
 			new GameStateOption("GameJolt Login", 5, new GameJoltLogin()),
 			//new PageOption("Tools (Very WIP)", 6, "Tools"),
 		],
@@ -125,6 +128,13 @@ class OptionsMenu extends MusicBeatState
 			new BoolOption("Discord RPC", "discordRPC", 6),
 			#end
 			new BoolOption("Disable Debug Menus", "disableDebugMenus", 7),
+		],
+		"Mobile Options" => [
+			new GameSubStateOption("Mobile Controls Opacity", mobile.substates.MobileControlsAlphaMenu),
+			new StringSaveOption("Hitbox Design", ["No Gradient", "No Gradient (Old)", "Gradient", "Hidden"], "hitboxType")#if mobile ,
+			new BoolOption("Wide Screen Mode", "wideScreen"),
+			new BoolOption("Allow Phone Screensaver", "screenSaver")
+			#end
 		],
 		[
 			"Optimizations",
@@ -273,6 +283,9 @@ class OptionsMenu extends MusicBeatState
 
 		if(FlxG.sound.music == null)
 			FlxG.sound.playMusic(MusicUtilities.GetOptionsMenuMusic(), 0.7, true);
+
+		addVirtualPad(UP_DOWN, A_B);
+		addVirtualPadCamera();
 	}
 
 	public static function LoadPage(Page_Name:String, goingBack:Bool = false)
@@ -399,6 +412,7 @@ class OptionsMenu extends MusicBeatState
 				}
 				else 
 				{
+					removeVpad = false;
 					FlxG.switchState(new VoiidMainMenuState());
 				}
 			}
@@ -589,5 +603,22 @@ class OptionsMenu extends MusicBeatState
 		for (a in arrow_Group)
 			a.visible = true;
 		//strumLineThing.visible = strumLineThing2.visible = true;
+	}
+
+        override function closeSubState() {
+		persistentUpdate = true;
+		super.closeSubState();
+		if (removeVpad)
+		{
+			removeVirtualPad();
+			addVirtualPad(UP_DOWN, A_B);
+		}
+		addVirtualPadCamera();
+	}
+
+	override function openSubState(substate:flixel.FlxSubState) {
+		persistentUpdate = false;
+		if (removeVpad) removeVirtualPad();
+		super.openSubState(substate);
 	}
 }
