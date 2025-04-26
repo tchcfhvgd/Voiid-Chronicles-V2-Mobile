@@ -1201,6 +1201,11 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		#if !android
+		addVirtualPad(NONE, P);
+		addVirtualPadCamera();
+		#end
+		
 		super.create();
 
 		if (!inCutscene && !inMultiplayerSession)
@@ -2167,7 +2172,7 @@ class PlayState extends MusicBeatState
 
 			strumLineNotes.add(babyArrow);
 
-			if(usedKeyCount != 4 && ((isPlayer && characterPlayingAs == 0) || (!isPlayer && characterPlayingAs == 1)) && utilities.Options.getData("extraKeyReminders") && showKeyPopups)
+			if(!controls.mobileC && usedKeyCount != 4 && ((isPlayer && characterPlayingAs == 0) || (!isPlayer && characterPlayingAs == 1)) && utilities.Options.getData("extraKeyReminders") && showKeyPopups)
 			{
 				var doPopup:Bool = true;
 				/*if (fdgod2PlayerSide >= 0)
@@ -2228,6 +2233,12 @@ class PlayState extends MusicBeatState
 		{
 			updateNoteBGPos();
 			noteBG.alpha = utilities.Options.getData("noteBGAlpha");
+		}
+		
+		if (isPlayer)
+		{
+			addHitbox();
+			addHitboxCamera();
 		}
 	}
 
@@ -3406,7 +3417,7 @@ class PlayState extends MusicBeatState
 
 		currentBeat = curBeat;
 
-		var pause:Bool = FlxG.keys.checkStatus(FlxKey.fromString(utilities.Options.getData("pauseBind", "binds")), FlxInputState.JUST_PRESSED);
+		var pause:Bool = FlxG.keys.checkStatus(FlxKey.fromString(utilities.Options.getData("pauseBind", "binds")), FlxInputState.JUST_PRESSED) || #if android FlxG.android.justReleased.BACK #else virtualPad.buttonP.justPressed #end;
 		if (MusicBeatState.usingController)
 		{
 			var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
@@ -3520,7 +3531,7 @@ class PlayState extends MusicBeatState
 
 	function endSong():Void
 	{
-		canPause = false;
+		canPause = hitbox.visible = #if !android virtualPad.visible = #end false;
 		FlxG.sound.music.volume = 0;
 		vocals.volume = 0;
 
@@ -4283,6 +4294,12 @@ class PlayState extends MusicBeatState
 							}
 						}*/
 
+					if (controls.mobileC) {
+						justPressedArray[i] = hitbox.hints[i].justPressed;
+						releasedArray[i] = hitbox.hints[i].released;
+						justReleasedArray[i] = hitbox.hints[i].justReleased;
+						heldArray[i] = hitbox.hints[i].pressed;
+					}
 					}
 
 					for (i in 0...justPressedArray.length) {
