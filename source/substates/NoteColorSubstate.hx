@@ -63,6 +63,8 @@ class NoteColorSubstate extends MusicBeatSubstate
 
         updateColorValsBase();
         update_Text();
+
+	addVirtualPad(LEFT_FULL, A_B_C);
     }
 
     override function update(elapsed:Float) {
@@ -73,7 +75,7 @@ class NoteColorSubstate extends MusicBeatSubstate
         var upP = controls.UP_P;
 		var downP = controls.DOWN_P;
         var accept = controls.ACCEPT;
-        var reset = controls.RESET;
+        var reset = controls.RESET || virtualPad.buttonC.justPressed;
         var back = controls.BACK;
 
         if(arrow_Group != null)
