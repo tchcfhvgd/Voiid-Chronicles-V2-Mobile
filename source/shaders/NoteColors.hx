@@ -24,10 +24,12 @@ class NoteColors {
 		"rright2" => [30, 255, 105]
 	];
 
-	public static function setNoteColor(note:String, color:Array<Int>):Void {
-		noteColors.set(note, color);
-		Options.setData(noteColors, "arrowColors", "arrowColors");
-	}
+	public static function setNoteColor(note:String, color:Array<Int>):Void
+    {
+        noteColors.set(note, color);
+
+        utilities.Options.setData(noteColors, "noteColors", "noteColors");
+    }
 
 	public static function getNoteColor(note:String):Array<Int> {
 		if (!noteColors.exists(note))
@@ -36,10 +38,9 @@ class NoteColors {
 		return noteColors.get(note);
 	}
 
-	public static function load():Void {
-		if (Options.getData("arrowColors", "arrowColors") != null)
-			noteColors = Options.getData("arrowColors", "arrowColors");
-		else
-			Options.setData(defaultColors, "arrowColors", "arrowColors");
-	}
+	public static function load():Void
+    {
+        if(utilities.Options.getData("noteColors", "noteColors") != null)
+            noteColors = utilities.Options.getData("noteColors", "noteColors");
+    }
 }
