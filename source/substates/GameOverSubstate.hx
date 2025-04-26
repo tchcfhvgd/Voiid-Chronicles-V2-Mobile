@@ -70,6 +70,9 @@ class GameOverSubstate extends MusicBeatSubstate
 		Conductor.changeBPM(100);
 
 		bf.playAnim('firstDeath');
+
+		addVirtualPad(NONE, A_B);
+		addVirtualPadCamera();
 	}
 
 	override function update(elapsed:Float)
