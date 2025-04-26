@@ -120,13 +120,17 @@ class CopyState extends states.MusicBeatState {
 		add(loadedText);
 
 		thread = new ThreadPool(0, CoolUtil.getCPUThreadsCount());
-		new FlxTimer().start(0.5, (tmr) -> {
-			thread.doWork.add(function(poop, shit) {
-				for (file in locatedFiles) {
-					loopTimes++;
-					copyAsset(file);
-				}
-			}, null);
+ 		thread.doWork.add(function(poop)
+ 		{
+ 			for (file in locatedFiles)
+ 			{
+ 				loopTimes++;
+ 				copyAsset(file);
+ 			}
+ 		});
+ 		new FlxTimer().start(0.5, (tmr) ->
+ 		{
+ 			thread.queue({});
 		});
 
 		super.create();
