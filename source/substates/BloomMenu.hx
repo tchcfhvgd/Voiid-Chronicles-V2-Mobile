@@ -48,6 +48,8 @@ class BloomMenu extends MusicBeatSubstate
         offsetText.text = "Bloom Setting: " + bloomList[bloomSetting];
         offsetText.screenCenter();
         add(offsetText);
+
+	addVirtualPad(LEFT_FULL, A_B);
     }
 
     override function update(elapsed:Float) {
@@ -67,6 +69,7 @@ class BloomMenu extends MusicBeatSubstate
             utilities.Options.setData(bloomSetting, "bloom");
             FlxG.camera.setFilters([]);
             FlxG.state.closeSubState();
+            removeVirtualPad();
         }
 
         if(leftP)
