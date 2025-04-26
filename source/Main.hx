@@ -162,7 +162,7 @@ class Main extends Sprite
 
 		//#if !mobile
 		display = new SimpleInfoDisplay(10, 3, 0xFFFFFF, "_sans");
-		addChild(display);
+		FlxG.game.addChild(display);
 		//#end
 
 		FlxG.signals.gameResized.add(fixCameraShaders);
