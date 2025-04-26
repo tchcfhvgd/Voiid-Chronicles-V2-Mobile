@@ -167,6 +167,8 @@ class ControlMenuSubstate extends MusicBeatSubstate
         add(dodgeKey);
         add(dodgeIcon);
         add(dodgeText);
+
+	addVirtualPad(LEFT_RIGHT, B);
     }
 
 
