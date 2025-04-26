@@ -1,49 +1,55 @@
 package states;
 
-import utilities.Options;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.FlxG;
 import flixel.util.FlxColor;
 import flixel.text.FlxText;
 
-class FlashingLightsMenu extends MusicBeatState
-{
-    override public function create()
-    {
-        super.create();
+class FlashingLightsMenu extends MusicBeatState {
+	public var text:FlxText;
+	public var canInput:Bool = true;
 
-        var text = new FlxText(0,0,0,"Hey! Leather Engine has flashing lights\nPress Y to enable them, or anything else to not.\n(Any key closes this menu)", 32);
-        #if ios 
-        var t = "Hey! Leather Engine has flashing lights\nPress Y to enable them, or anything else to not.\n(Any key closes this menu)\n\n";
-        t += "This is a ios port of Voiid Chonicles,\nsome things may not work correctly\nor some songs maybe crash depending on your device.\n";
-        t += "Shaders and Modcharts are disabled by default,\nyou can turn them back on but it may crash on some songs,\nif youre still getting crashes check\nGraphics->Optimization in the options menu and mess with the settings\n";
-        text.size = 24;
-        text.text = t;
-        Options.setData(false, "shaders"); //turned off by default      
-        Options.setData(false, "modcharts");
-        Options.setData(false, "gpuTextures");   
-        #end
-        text.font = Paths.font("vcr.ttf");
-        text.screenCenter();
-        text.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5, 1);
-        add(text);
-    }
+	override public function create() {
+		super.create();
 
-    override function update(elapsed:Float)
-    {
-        super.update(elapsed);
+		final buttonY:String = controls.mobileC ? 'A' : 'Y';
+		final buttonN:String = controls.mobileC ? 'B' : 'N';
 
-        var pressed:Bool = false;
-        #if ios
-		if (iosControls.justPressedAny())
-            pressed = true;
-		#end
+		text = new FlxText(0, 0, 0, 'This game has flashing lights!\nPress $buttonY to enable them, or $buttonN to disable them.\n(Either ${controls.mobileC ? 'button' : 'key'} closes takes you to the title screen.)',
+			32);
+		text.font = Paths.font('vcr.ttf');
+		text.screenCenter();
+		add(text);
 
-        if(FlxG.keys.justPressed.Y)
-            Options.setData(true, "flashingLights");
-        else if(!FlxG.keys.justPressed.Y && FlxG.keys.justPressed.ANY)
-            Options.setData(false, "flashingLights");
+		addVirtualPad(NONE, A_B);
+	}
 
-        if(FlxG.keys.justPressed.ANY || pressed)
-            FlxG.switchState(new TitleState());
-    }
+	override function update(elapsed:Float) {
+		super.update(elapsed);
+
+		if (!canInput) {
+			return;
+		}
+
+		var yes:Bool = virtualPad.buttonA.justPressed || FlxG.keys.justPressed.Y;
+		var no:Bool = virtualPad.buttonB.justPressed || FlxG.keys.justPressed.N;
+
+		if (yes) {
+			Options.setData(true, 'flashingLights');
+		} else if (no) {
+			Options.setData(false, 'flashingLights');
+		}
+
+		if (yes || no) {
+			FlxG.sound.play(Paths.sound('confirmMenu'));
+
+			FlxTween.tween(text, {alpha: 0}, 2.0, {
+				ease: FlxEase.cubeInOut,
+				onComplete: (_) -> FlxG.switchState(() -> new TitleState())
+			});
+
+			canInput = false;
+		}
+	}
 }
