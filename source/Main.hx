@@ -84,8 +84,10 @@ class Main extends Sprite
 		cpp.vm.Gc.enable(true);
 		#end
 
+		#if Windows
 		addChild(new Bitmap(new BitmapData(Std.int(Capabilities.screenResolutionX),
 		Std.int(Capabilities.screenResolutionY), false, FlxColor.fromRGB(1,1,1)), true));
+		#end
 
 		var game:FlxGame = new FlxGame(gameWidth, gameHeight, #if mobile !CopyState.checkExistingFiles() ? CopyState : #end initialState, #if (flixel < "5.0.0") zoom, #end framerate, framerate, skipSplash, startFullscreen);
 		addChild(game);
@@ -168,7 +170,7 @@ class Main extends Sprite
 		FlxG.signals.gameResized.add(fixCameraShaders);
 
 		popupManager = new PopupManager();
-		addChild(popupManager);
+		FlxG.game.addChild(popupManager);
 		
 		#if mobile
 		FlxG.scaleMode = new mobile.MobileScaleMode();
