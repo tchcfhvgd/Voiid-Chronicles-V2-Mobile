@@ -124,9 +124,12 @@ class MusicBeatState extends FlxUIState
 	
 	public static var usingController:Bool = false;
 
+	public static var instance:MusicBeatState;
+	
 	override public function new()
 	{	
 		super();
+		instance = this;
 	}
 
 	override public function create() 
