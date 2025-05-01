@@ -353,7 +353,7 @@ class ServerCreateSubstate extends MusicBeatSubstate
             //FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
             //FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
         }
-        if (controls.BACK && !serverIDInput.hasFocus && !Multiplayer.createdAClient)
+        if (controls.BACK ||  #if android FlxG.android.justReleased.BACK #end && !serverIDInput.hasFocus && !Multiplayer.createdAClient)
         {
             //FlxG.mouse.visible = false;
             FlxG.state.persistentUpdate = true;
