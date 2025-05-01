@@ -1,12 +1,12 @@
 package flixel.addons.api;
 
-import flash.display.Loader;
-import flash.display.BitmapData;
-import flash.events.Event;
-import flash.events.IOErrorEvent;
-import flash.net.URLLoader;
-import flash.net.URLRequest;
-import flash.net.URLRequestMethod;
+import openfl.display.Loader;
+import openfl.display.BitmapData;
+import openfl.events.Event;
+import openfl.events.IOErrorEvent;
+import openfl.net.URLLoader;
+import openfl.net.URLRequest;
+import openfl.net.URLRequestMethod;
 import haxe.crypto.Md5;
 import haxe.crypto.Sha1;
 import flixel.FlxG;
@@ -138,6 +138,11 @@ class FlxGameJolt
 	 */
 	static var _userName:String;
 
+	public static function getUserName()
+	{
+		return _userName;
+	}
+
 	/**
 	 * Internal storage for this user's token. Can be retrieved automatically if Flash or QuickPlay.
 	 */
@@ -146,7 +151,12 @@ class FlxGameJolt
 	/**
 	 * Internal storage for the most common URL elements: the gameID, user name, and user token.
 	 */
-	static var _idURL:String;
+	static var _idURL(get, null):String;
+
+	private static function get__idURL() //reconstruct every time to prevent someone from changing their username while being logged in i think???, so now if its changed the token wont work???
+	{
+		return URL_GAME_ID + _gameID + URL_USER_NAME + _userName + URL_USER_TOKEN + _userToken;
+	}
 
 	/**
 	 * Set to true once game ID, user name, user token have been set and user name and token have been verified.
@@ -306,7 +316,7 @@ class FlxGameJolt
 		// Only send initialization request to GameJolt if user name and token were found or passed.
 		if (_userName != null && _userToken != null)
 		{
-			_idURL = URL_GAME_ID + _gameID + URL_USER_NAME + _userName + URL_USER_TOKEN + _userToken;
+			//_idURL = URL_GAME_ID + _gameID + URL_USER_NAME + _userName + URL_USER_TOKEN + _userToken;
 			_verifyAuth = true;
 			sendLoaderRequest(URL_API + "users/auth/" + RETURN_TYPE + _idURL, Callback, loaderGroup);
 		}
@@ -317,6 +327,25 @@ class FlxGameJolt
 			#end
 		}
 	}
+
+	public static function fetchFriends(?Callback:Dynamic, ?loaderGroup:String = "default")
+	{
+		if (!authenticated)
+			return;
+		getLoaderGroup(loaderGroup)._batch = true;
+		sendLoaderRequest(URL_API + "friends/" + RETURN_TYPE + _idURL, Callback, loaderGroup);
+	}
+
+	/*
+	public static function checkUserSession(UserName:String, ?Callback:Dynamic, ?loaderGroup:String = "default")
+	{
+		if (!authenticated)
+			return;
+		var tempURL:String = URL_API + "sessions/check/" + RETURN_TYPE + URL_GAME_ID + _gameID;
+		//tempURL += "&user_id=" + Std.string(userID);
+		tempURL += "&username=" + UserName;
+		sendLoaderRequest(tempURL, Callback, loaderGroup);
+	}*/
 
 	/**
 	 * Begin a new session. Sessions that are not pinged at most every 120 seconds will be closed. Requires user authentication.
@@ -749,7 +778,7 @@ class FlxGameJolt
 						var suffix:String = "";
 						if (keys > 0)
 							suffix = ""+keys;
-						if (temp[0] == 'key')
+						if (temp[0] == 'key' || temp[0] == "friend_id")
 							keys++;
 						_loaderGroup._returnMap.set(temp[0]+suffix, temp[1]);
 					}
@@ -930,6 +959,21 @@ class FlxGameJolt
 		fetchUser(0, _userName, null, Callback);
 	}
 
+	/**
+	 * An easy-to-use function that returns a user's avatar image as BitmapData.
+	 * Requires that you've authenticated the user's data.
+	 * All user images will be 60px by 60px.
+	 *
+	 * @param	Callback	An optional callback function. Must take a BitmapData object as a parameter.
+	 */
+	 public static function fetchUserAvatarImage(userID:Int, ?Callback:BitmapData->Void, ?loaderGroup:String = "userAvatar"):Void
+		{
+			if (!gameInit)
+				return;
+			getLoaderGroup(loaderGroup)._getImage = true;
+			fetchUser(userID, null, null, Callback);
+		}
+
 	static function getLoaderGroup(loaderGroup:String)
 	{
 		if (!_loaders.exists(loaderGroup))
@@ -967,6 +1011,7 @@ class FlxGameJolt
 		}
 		else
 		{
+			trace('failed to load image');
 			#if debug
 			FlxG.log.warn("FlxGameJolt: Failed to load image");
 			#end
