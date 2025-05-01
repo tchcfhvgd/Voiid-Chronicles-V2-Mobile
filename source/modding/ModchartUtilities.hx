@@ -641,7 +641,8 @@ class ModchartUtilities
                 return true;
             #end
 
-            return states.MusicBeatState.instance.hitbox.extraHint.justPressed || FlxG.keys.checkStatus(FlxKey.fromString(utilities.Options.getData("dodgeBind", "binds")), FlxInputState.JUST_PRESSED);
+            @:privateAccess
+	    return states.MusicBeatState.instance.hitbox.extraHint.justPressed || FlxG.keys.checkStatus(FlxKey.fromString(utilities.Options.getData("dodgeBind", "binds")), FlxInputState.JUST_PRESSED);
         });
 
 
