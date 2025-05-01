@@ -105,7 +105,7 @@ class ServerListViewSubstate extends MusicBeatSubstate
     {
         
 
-        if (controls.BACK)
+        if (controls.BACK ||  #if android FlxG.android.justReleased.BACK #end)
         {
             //FlxG.mouse.visible = false;
             instance.persistentUpdate = true;
