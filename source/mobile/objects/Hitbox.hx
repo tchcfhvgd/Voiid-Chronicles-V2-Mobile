@@ -44,9 +44,10 @@ class Hitbox extends FlxSpriteGroup {
 	 * Array of MobileButton representing the hints.
 	 */
 	public var hints(default, null):Array<MobileButton>;
+	public var extraHint:MobileButton = new MobileButton();
 
 	final guh2:Float = 0.00001;
-	final guh:Float = Options.getData("mobileCAlpha") >= 0.9 ? Options.getData("mobileCAlpha") - 0.2 : Options.getData("mobileCAlpha");
+	final guh:Float = utilities.Options.getData("mobileCAlpha") >= 0.9 ? utilities.Options.getData("mobileCAlpha") - 0.2 : utilities.Options.getData("mobileCAlpha");
 
 	/**
 	 * Creates the zone with the specified number of hints.
@@ -58,11 +59,13 @@ class Hitbox extends FlxSpriteGroup {
 	 */
 	public function new(ammo:UInt, perHintWidth:Int, perHintHeight:Int):Void {
 		super();
-
 		hints = new Array<MobileButton>();
 
 		for (i in 0...ammo)
-			add(hints[i] = createHint(i * perHintWidth, 0, perHintWidth, perHintHeight, getHintColor(ammo - 1, i)));
+			add(hints[i] = createHint(i * perHintWidth, (states.PlayState.instance.songHasDodges && !utilities.Options.getData("hitboxPos") ? 200 : 0), perHintWidth, (states.PlayState.instance.songHasDodges ? perHintHeight - 200 : perHintHeight), getHintColor(ammo, i)));
+
+		if (states.PlayState.instance.songHasDodges)
+			add(extraHint = createHint(0, (utilities.Options.getData("hitboxPos") ? FlxG.height - 200 : 0), FlxG.width, 200, 0xFF0066FF));
 
 		scrollFactor.set();
 	}
@@ -94,11 +97,14 @@ class Hitbox extends FlxSpriteGroup {
 		hint.loadGraphic(createHintGraphic(Width, Height, Color));
 
 		hint.label = new FlxSprite();
-		hint.labelStatusDiff = (Options.getData("hitboxType") != "Hidden") ? guh : guh2;
+		hint.labelStatusDiff = (utilities.Options.getData("hitboxType") != "Hidden") ? guh : guh2;
 		hint.label.loadGraphic(createHintGraphic(Width, Math.floor(Height * 0.035), Color, true));
-		hint.label.offset.y -= (hint.height - hint.label.height);
+		if (utilities.Options.getData("hitboxPos"))
+			hint.label.offset.y -= (hint.height - hint.label.height);
+		else
+			hint.label.offset.y += (hint.height - hint.label.height);
 
-		if (Options.getData("hitboxType") != "Hidden") {
+		if (utilities.Options.getData("hitboxType") != "Hidden") {
 			var hintTween:FlxTween = null;
 			var hintLaneTween:FlxTween = null;
 
@@ -141,11 +147,11 @@ class Hitbox extends FlxSpriteGroup {
 
 		hint.moves = hint.solid = false;
 		hint.multiTouch = hint.immovable = true;
-		hint.antialiasing = Options.getData("antialiasing");
+		hint.antialiasing = utilities.Options.getData("antialiasing");
 		hint.scrollFactor.set();
 		hint.label.alpha = hint.alpha = guh2;
 		hint.canChangeLabelAlpha = false;
-		hint.active = !Options.getData("botplay");
+		//hint.active = !utilities.Options.getData("botplay");
 		#if FLX_DEBUG
 		hint.ignoreDrawDebug = true;
 		#end
@@ -164,7 +170,7 @@ class Hitbox extends FlxSpriteGroup {
 		var shape:Shape = new Shape();
 		shape.graphics.beginFill(Color);
 
-		if (Options.getData("hitboxType") == "No Gradient") {
+		if (utilities.Options.getData("hitboxType") == "No Gradient") {
 			var matrix:Matrix = new Matrix();
 			matrix.createGradientBox(Width, Height, 0, 0, 0);
 
@@ -174,11 +180,11 @@ class Hitbox extends FlxSpriteGroup {
 				shape.graphics.beginGradientFill(RADIAL, [Color, Color], [0, 1], [60, 255], matrix, PAD, RGB, 0);
 			shape.graphics.drawRect(0, 0, Width, Height);
 			shape.graphics.endFill();
-		} else if (Options.getData("hitboxType") == "No Gradient (Old)") {
+		} else if (utilities.Options.getData("hitboxType") == "No Gradient (Old)") {
 			shape.graphics.lineStyle(10, Color, 1);
 			shape.graphics.drawRect(0, 0, Width, Height);
 			shape.graphics.endFill();
-		} else { // if (Options.getData("hitboxType") == 'Gradient')
+		} else { // if (utilities.Options.getData("hitboxType") == 'Gradient')
 			shape.graphics.lineStyle(3, Color, 1);
 			shape.graphics.drawRect(0, 0, Width, Height);
 			shape.graphics.lineStyle(0, 0, 0);
@@ -200,7 +206,34 @@ class Hitbox extends FlxSpriteGroup {
 	@:dox(hide)
 	private function getHintColor(ammo:Int, currentAmmo:Int):FlxColor
 	{
-		var blah:Array<Int> = shaders.NoteColors.getNoteColor(utilities.NoteVariables.Other_Note_Anim_Stuff[ammo][currentAmmo]);
-		return FlxColor.fromRGB(blah[0], blah[1], blah[2]);
+		final ORANGE:FlxColor = 0xF9A949;
+		final PURPLE:FlxColor = 0x5F1FBD;
+		final GREEN:FlxColor = 0x2DC671;
+		final PINK:FlxColor = 0xF88989;
+		final RED:FlxColor = 0xEE2959;
+		final LIME:FlxColor = 0x6BC951;
+		final GRAY:FlxColor = 0xC3B5C4;
+		final GREEN2:FlxColor = 0x2EC671;
+		final PINK2:FlxColor = 0xF68A88;
+		final MAGENTA:FlxColor = 0xE82487;
+		final VIOLET:FlxColor = 0x823697;
+		final LIME2:FlxColor = 0x6AC94F;
+		final BRIGHT_RED:FlxColor = 0xFF0100;
+		final BLUE:FlxColor = 0x1E28FE;
+		final HOT_PINK:FlxColor = 0xF52F56;
+		final DARK_PURPLE:FlxColor = 0x571AB8;
+
+		final colorPresets:Map<Int, Array<FlxColor>> = [
+			6 => [ORANGE, PURPLE, GREEN, PINK, RED, LIME],
+			7 => [ORANGE, PURPLE, GREEN, GRAY, PINK, RED, LIME],
+			9 => [ORANGE, RED, PURPLE, GREEN2, GRAY, PINK2, MAGENTA, VIOLET, LIME2],
+			10 => [ORANGE, RED, PURPLE, GREEN2, GRAY, GRAY, PINK2, MAGENTA, VIOLET, LIME2],
+			12 => [ORANGE, RED, PURPLE, GREEN2, BRIGHT_RED, GRAY, GRAY, BLUE, PINK2, MAGENTA, VIOLET, LIME2]
+		];
+
+		final defaultColors:Array<FlxColor> = [ORANGE, HOT_PINK, DARK_PURPLE, GREEN];
+		final colors:Array<FlxColor> = colorPresets.exists(ammo) ? colorPresets.get(ammo) : defaultColors;
+
+		return colors[currentAmmo];
 	}
 }
