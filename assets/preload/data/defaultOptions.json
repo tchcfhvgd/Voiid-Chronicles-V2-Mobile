@@ -313,6 +313,10 @@
         {
             "option": "wideScreen",
             "value": false
+        },
+        {
+            "option": "hitboxPos",
+            "value": true
         }
     ]
 }
