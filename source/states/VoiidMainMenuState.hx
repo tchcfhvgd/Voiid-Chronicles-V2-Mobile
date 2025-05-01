@@ -1,5 +1,10 @@
 package states;
 
+import Popup.GlovePopup;
+import online.Gloves;
+import online.ChatManager.ChatMessage;
+import online.MultiplayerRoomState;
+import online.FriendsListSubstate;
 import online.GameJolt;
 import online.ServerCreateSubstate;
 import flixel.input.gamepad.FlxGamepadInputID;
@@ -43,8 +48,8 @@ import modding.PolymodHandler;
 
 class VoiidMainMenuState extends MusicBeatState
 {
-    public static final devBuild:Bool = false;
-    public static final modVersion:String = "v2.0.2";
+    public static final devBuild:Bool = #if officialBuild false #else true #end;
+    public static final modVersion:String = "V3 Cancelled Build";
 
     //@:allow(StoryMenuButton.loadButtons)
     static final wiikList = [
@@ -108,6 +113,8 @@ class VoiidMainMenuState extends MusicBeatState
     {
         Conductor.changeBPM(60);
 		MusicBeatState.windowNameSuffix = "";
+
+        Gloves.loadGloves();
 
         if (devBuild)
             FlxG.save.data.playedDevBuild = true; //maybe could use this for something idk
@@ -203,7 +210,7 @@ class VoiidMainMenuState extends MusicBeatState
 
         var loginReturn:String = GameJolt.initStuffs();
         trace(loginReturn);
-        if (loginReturn == 'no login found' && FlxG.save.data.seenLoginPopup == null)
+        /*if (loginReturn == 'no login found' && FlxG.save.data.seenLoginPopup == null)
         {
             FlxG.save.data.seenLoginPopup = true;
             FlxG.save.flush();
@@ -211,7 +218,7 @@ class VoiidMainMenuState extends MusicBeatState
             {
                 FlxG.switchState(new GameJoltLogin());
             }));
-        }
+        }*/
 
         websiteText = new FlxText(FlxG.width, FlxG.height, 0, "[Visit Website]");
         websiteText.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -233,6 +240,9 @@ class VoiidMainMenuState extends MusicBeatState
         upArrow.screenCenter();
         upArrow.antialiasing = true;
         add(upArrow);
+
+        //var testShit = new ui.VisualizerSprite(0, 0);
+        //add(testShit);
         
 
 
@@ -249,16 +259,38 @@ class VoiidMainMenuState extends MusicBeatState
         */
         //Main.popupManager.addPopup(new AwardPopup(5, 400, 120, AwardManager.awards[0]));
                 
-
+        
 
         //Main.popupManager.addPopup(new Popup(8));
 
         //add(new AwardDisplay(AwardManager.awards[0]));
 
+        //var message = new ChatMessage("SERVER", 0xFFFF0000, "test message lol asdfhgjka :die::martthumbs::talk::BUSS::cries::punch::vcdevs:", 24);
+        //message.y += 100;
+        //add(message);
 
         changeWeek(0);
 
         super.create();
+
+        //Main.glovePopupManager.addPopup(new GlovePopup(3, 300, 64, "white", 100));
+        //Main.glovePopupManager.addPopup(new GlovePopup(3, 300, 64, "white", 100));
+        //Main.glovePopupManager.addPopup(new GlovePopup(3, 300, 64, "white", 100));
+        //Main.glovePopupManager.addPopup(new GlovePopup(3, 300, 64, "white", 100));
+        //Main.glovePopupManager.addPopup(new GlovePopup(3, 300, 64, "white", 100));
+        //Main.glovePopupManager.addPopup(new GlovePopup(3, 300, 64, "white", 100));
+
+        /*var imagePath = Paths.image("online/room/glove_white");
+        trace(imagePath);
+        var spriteImage:FlxSprite = new FlxSprite(100,100).loadGraphic(imagePath);
+        spriteImage.setGraphicSize(100, 100);
+        spriteImage.updateHitbox();
+        add(spriteImage);*/
+
+        //var gloves = new GloveDisplay("white", Gloves.getWhiteGloveCount(), 32);
+        //gloves.x = 50;
+        //gloves.y = 50;
+        //add(gloves);
     }
 
     function makeItems()
@@ -268,16 +300,15 @@ class VoiidMainMenuState extends MusicBeatState
         var freeplayUnlocked:Bool = (Options.getData(saveStr, "progress") != null);
         var onlineUnlocked:Bool = (Options.getData("beat_wiik 3", "progress") != null);
         onlineUnlocked = true;
-        #if ios
+
         if (VoiidMainMenuState.devBuild)
             freeplayUnlocked = true;
-        #end
 
         storyButton = new StoryMenuButton(0,0);
         storyButton.makeGraphic(363, 363, 0xFF4B05B5);
         storyButton.buttonFunc = function()
         {
-            //#if !ios
+            //#if !mobile
             if (!wiiksUnlocked[selectedWiik]) //locked week
             {
                 storyButton.clicked = false;
@@ -426,7 +457,7 @@ class VoiidMainMenuState extends MusicBeatState
         items.push(downButton);
 
 
-        var onlineButton = new MainMenuButton(FlxG.width-310, optionsButton.y-130);
+        /*var onlineButton = new MainMenuButton(FlxG.width-310, optionsButton.y-130);
         onlineButton.enabled = onlineUnlocked;
         onlineButton.makeGraphic(250, 120, 0xFF4B05B5);
         onlineButton.updateHitbox();
@@ -439,7 +470,7 @@ class VoiidMainMenuState extends MusicBeatState
         }
         onlineButton.loadButtons("online");
         add(onlineButton);
-        items.push(onlineButton);
+        items.push(onlineButton);*/
 
         if (!onlineUnlocked)
         {
@@ -486,6 +517,20 @@ class VoiidMainMenuState extends MusicBeatState
             {
                 websiteText.bold = false;
                 websiteText.color = 0xFFFFFFFF;
+            }
+
+            if (FlxG.keys.justPressed.ONE)
+            {
+                persistentUpdate = false;
+                openSubState(new FriendsListSubstate());
+            }
+            if (FlxG.keys.justPressed.TWO)
+            {
+                onSelectItem();	
+                new FlxTimer().start(0.2, function(tmr:FlxTimer)
+                {
+                    FlxG.switchState(new Test.TestState());
+                });
             }
 
             /*if (FlxG.keys.justPressed.ONE)
@@ -687,7 +732,7 @@ class MainMenuButton extends FlxSprite
 
     function doesOverlap() : Bool
     {
-		#if ios
+		#if mobile
 		for (touch in FlxG.touches.list)
 		{
 			if (touch.overlaps(this))
@@ -698,7 +743,7 @@ class MainMenuButton extends FlxSprite
     }
     function isJustPressed() : Bool
     {
-        #if ios
+        #if mobile
 		for (touch in FlxG.touches.list)
 		{
 			if (touch.justPressed && touch.overlaps(this))
@@ -867,7 +912,7 @@ class ContinueWeekSubstate extends MusicBeatSubstate
     }
     function doesOverlap(spr:FlxSprite) : Bool
     {
-        #if ios
+        #if mobile
         for (touch in FlxG.touches.list)
         {
             if (touch.overlaps(spr))
@@ -878,7 +923,7 @@ class ContinueWeekSubstate extends MusicBeatSubstate
     }
     function isJustPressed() : Bool
     {
-        #if ios
+        #if mobile
 		for (touch in FlxG.touches.list)
 		{
 			if (touch.justPressed)
