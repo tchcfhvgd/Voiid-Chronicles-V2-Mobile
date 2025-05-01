@@ -250,4 +250,11 @@ class CoolUtil
     {
         return 1;
     }
+
+    public static function getShiftedColor(col:FlxColor, h:Float, s:Float, v:Float)
+	{
+		var hsv = RGBToHSV(col);
+
+		return FlxColor.fromHSB((hsv.redFloat + h)*360,hsv.greenFloat,hsv.blueFloat);
+	}
 }
