@@ -97,7 +97,7 @@ class Song
 
 		var rawJson:String = "";
 
-		#if !mobile 
+		#if !ios
 		folder = folder.toLowerCase();
 		jsonInput = jsonInput.toLowerCase();
 		#end
