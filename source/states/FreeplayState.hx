@@ -295,7 +295,6 @@ class FreeplayState extends MusicBeatState
 				case "tutorial": 
 					//die
 				case "voiid rush": 
-					if (VoiidMainMenuState.devBuild || AwardManager.isAllUnlocked())
 						songs.push(new SongMetadata(song, week, icon, diffs, actualColor, false));
 				default:
 					songs.push(new SongMetadata(song, week, icon, diffs, actualColor, locked));
@@ -580,6 +579,7 @@ class FreeplayState extends MusicBeatState
 		super.create();
 
 		addVirtualPad(LEFT_FULL, A_B_C_X_Y_Z);
+		addVirtualPadCamera();
 	}
 
 	function updateDiffImage()
