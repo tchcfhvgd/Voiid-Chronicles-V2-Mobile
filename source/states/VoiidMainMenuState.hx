@@ -256,8 +256,7 @@ class VoiidMainMenuState extends MusicBeatState
         var freeplayUnlocked:Bool = (Options.getData(saveStr, "progress") != null);
         var onlineUnlocked:Bool = (Options.getData("beat_wiik 3", "progress") != null);
         onlineUnlocked = true;
-        #if ios
-        if (VoiidMainMenuState.devBuild)
+        #if mobile
             freeplayUnlocked = true;
         #end
 
