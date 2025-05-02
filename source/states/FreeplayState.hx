@@ -269,7 +269,7 @@ class FreeplayState extends MusicBeatState
 				songPortMap.set(song, listArray[5]);
 			}
 
-			var locked:Bool = true;
+			var locked:Bool = false;
 			if (isSongBeaten(song))
 			{
 				locked = false;
